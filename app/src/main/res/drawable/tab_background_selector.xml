@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Selected state -->
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#CCCCCC" /> <!-- Light gray for selected tab -->
+            <corners android:radius="20dp" /> <!-- Rounded corners -->
+        </shape>
+    </item>
+
+    <!-- Unselected state -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#EEEEEE" /> <!-- Even lighter gray for unselected -->
+            <corners android:radius="20dp" /> <!-- Rounded corners -->
+        </shape>
+    </item>
+</selector>

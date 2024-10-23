@@ -1,0 +1,161 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvSignupTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/tw_cen_mt"
+        android:gravity="start"
+        android:text="Create your new account"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvWelcomeBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/tw_cen_mt"
+        android:gravity="start"
+        android:text="Create an account to start looking for the food you like"
+        android:textColor="#878787"
+        android:textSize="18sp" />
+
+    <!-- Username Input -->
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Your Username"
+        android:padding="16dp"
+        android:background="@drawable/input_field_background"
+        android:fontFamily="@font/tw_cen_mt"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Email Input -->
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Your Email"
+        android:padding="16dp"
+        android:background="@drawable/input_field_background"
+        android:fontFamily="@font/tw_cen_mt"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Phone Number Input -->
+    <EditText
+        android:id="@+id/etPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Your Phone Number"
+        android:padding="16dp"
+        android:background="@drawable/input_field_background"
+        android:fontFamily="@font/tw_cen_mt"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Password Input -->
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Your Password"
+        android:padding="16dp"
+        android:inputType="textPassword"
+        android:background="@drawable/input_field_background"
+        android:fontFamily="@font/tw_cen_mt"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Signup Button -->
+    <Button
+        android:id="@+id/btnSignup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        android:textAllCaps="false"
+        android:backgroundTint="#0066cc"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/tw_cen_mt"
+        android:textSize="16sp"
+        android:padding="12dp"/>
+
+    <!-- Login Link -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/tw_cen_mt"
+            android:textSize="16sp"
+            android:text="Already have an account?" />
+
+        <TextView
+            android:id="@+id/tvLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" Login"
+            android:textSize="16sp"
+            android:textColor="#0066cc"
+            android:fontFamily="@font/tw_cen_mt"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <!-- Or Divider -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#000000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Or"
+            android:gravity="center"
+            android:fontFamily="@font/tw_cen_mt"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#000000" />
+    </LinearLayout>
+
+    <!-- Google Button -->
+
+    <Button
+        android:id="@+id/btnGoogleSignup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up with Google"
+        android:drawableLeft="@drawable/ic_google"
+        android:backgroundTint="#000000"
+        android:fontFamily="@font/tw_cen_mt"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF" />
+
+</LinearLayout>

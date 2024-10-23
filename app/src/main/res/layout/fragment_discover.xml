@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Top Section with Title and Location -->
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Discover Title -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Discover"
+            android:fontFamily="@font/tw_cen_mt"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
+
+        <!-- Location and Change Button -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/location_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <!-- Location Text with Icon -->
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Fetching location..."
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_location"
+                android:drawablePadding="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/change_location"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:gravity="center_vertical" />
+
+            <!-- Change Button -->
+            <Button
+                android:id="@+id/change_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:cornerRadius="20dp"
+                app:backgroundTint="@color/colorPrimary" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <!-- Add NestedScrollView to make the entire page scrollable -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Inner content of the scrollable view -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Section 1 Title: Save before it's too late -->
+            <TextView
+                android:id="@+id/section_1_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save before it's too late"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
+
+            <!-- RecyclerView for Section 1 -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_section_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:clipToPadding="false" />
+
+            <!-- Section 2 Title: Nearby -->
+            <TextView
+                android:id="@+id/section_2_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nearby"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
+
+            <!-- RecyclerView for Section 2 -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_section_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:clipToPadding="false" />
+
+            <!-- Section 3 Title: Collect for Dinner -->
+            <TextView
+                android:id="@+id/section_3_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Collect for Dinner"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
+
+            <!-- RecyclerView for Section 3 -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_section_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:clipToPadding="false" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

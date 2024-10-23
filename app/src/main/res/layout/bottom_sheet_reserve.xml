@@ -1,0 +1,210 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Reservation Time -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:padding="16dp">
+
+                <!-- Restaurant Name -->
+                <TextView
+                    android:id="@+id/reservation_restaurant_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Restaurant - Downtown"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:gravity="center"
+                    android:paddingBottom="8dp" />
+
+                <!-- Time with icon -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <!-- Time Icon -->
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_time"
+                        android:layout_gravity="center"
+                        android:tint="@android:color/darker_gray"
+                        android:layout_marginEnd="8dp" />
+
+                    <!-- Time Text -->
+                    <TextView
+                        android:id="@+id/reservation_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tomorrow 18:00 - 19:00"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/tw_cen_mt"
+                        android:textColor="@android:color/darker_gray"
+                        android:gravity="center_vertical" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Divider after reservation time -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <!-- Quantity Selector -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingTop="12dp">
+
+                <!-- Decrease Button -->
+                <ImageButton
+                    android:id="@+id/btn_decrease_quantity"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/round_button_background"
+                    android:src="@drawable/ic_decrease"
+                    android:tint="@android:color/black"
+                    android:scaleType="centerInside" />
+
+                <!-- Quantity Display -->
+                <TextView
+                    android:id="@+id/tv_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textSize="40sp"
+                    android:textColor="@android:color/black"
+                    android:paddingStart="32dp"
+                    android:paddingEnd="32dp"
+                    android:gravity="center"
+                    android:textStyle="bold" />
+
+                <!-- Increase Button -->
+                <ImageButton
+                    android:id="@+id/btn_increase_quantity"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/round_button_background"
+                    android:src="@drawable/ic_increase"
+                    android:tint="@android:color/black"
+                    android:scaleType="centerInside" />
+            </LinearLayout>
+
+            <!-- Divider after quantity -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginTop="8dp" />
+
+            <!-- Checkbox for Allergen-Friendly -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:gravity="center_vertical">
+
+                <CheckBox
+                    android:id="@+id/allergen_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Do you require all magic boxes to be allergen-friendly?"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/black"
+                    android:paddingStart="8dp" />
+            </LinearLayout>
+
+            <!-- Divider after checkbox -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Total Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/total_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total:"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:paddingEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/tv_total_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="US$ 4.00"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <!-- Disclaimer -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="By reserving this meal, you agree to Too Good To Go's terms and conditions."
+                android:textSize="12sp"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textColor="@android:color/darker_gray"
+                android:gravity="center"
+                android:padding="8dp" />
+
+            <!-- Reserve Button -->
+            <Button
+                android:id="@+id/btn_reserve"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="RESERVE"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textSize="18sp"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@android:color/white"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

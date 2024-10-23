@@ -1,0 +1,10 @@
+<!-- res/drawable/price_tag_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:radius="8dp"/>
+    <solid android:color="#244B4C"/>
+    <padding
+        android:left="4dp"
+        android:top="2dp"
+        android:right="4dp"
+        android:bottom="2dp"/>
+</shape>
