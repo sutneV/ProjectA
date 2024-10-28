@@ -1,0 +1,5 @@
+<!-- res/transition/rounded_transition.xml -->
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
+    <changeBounds/>
+    <changeClipBounds/>
+</transitionSet>

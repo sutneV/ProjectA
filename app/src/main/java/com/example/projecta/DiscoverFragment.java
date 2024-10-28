@@ -1,6 +1,8 @@
 package com.example.projecta;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -22,10 +24,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -38,11 +44,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DiscoverFragment extends Fragment {
 
+    private static final long CACHE_VALIDITY_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+    private static final String PREF_NAME = "DiscoverCachePrefs";
+    private static final String PREF_LAST_POPULAR_FETCH = "lastPopularFetch";
+    private static final String PREF_LAST_NEARBY_FETCH = "lastNearbyFetch";
+    private static final String PREF_LAST_DINNER_FETCH = "lastDinnerFetch";
+
+    private SharedPreferences sharedPreferences;
     private TextView locationTextView;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
-    // Separate lists for each section
     private List<Restaurant> popularRestaurants;
     private List<Restaurant> nearbyRestaurants;
     private List<Restaurant> dinnerRestaurants;
@@ -53,18 +65,19 @@ public class DiscoverFragment extends Fragment {
 
     private HashMap<String, String> restaurantPrices = new HashMap<>();
     private HashMap<String, Boolean> favoriteMap = new HashMap<>();
+    private HashSet<String> addedBusinessIds = new HashSet<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_discover, container, false);
 
-        // Initialize UI components
+        sharedPreferences = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
         locationTextView = view.findViewById(R.id.location);
 
         section1RecyclerView = view.findViewById(R.id.recyclerView_section_1);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3, GridLayoutManager.HORIZONTAL, false);
-        section1RecyclerView.setLayoutManager(gridLayoutManager);
+        section1RecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3, GridLayoutManager.HORIZONTAL, false));
 
         section2RecyclerView = view.findViewById(R.id.recyclerView_section_2);
         section2RecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -72,107 +85,112 @@ public class DiscoverFragment extends Fragment {
         section3RecyclerView = view.findViewById(R.id.recyclerView_section_3);
         section3RecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        // Initialize FusedLocationProviderClient to get user location
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
-        // Check location permission
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
-            getCurrentLocation();
+            loadFavoritesFromFirestore();
         }
 
         return view;
     }
 
-    // Get the user's current location
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT).show();
             return;
         }
-        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    // Get the latitude and longitude
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
 
-                    // Reverse geocoding to get the address
-                    Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
-                    try {
-                        List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                        if (addresses != null && !addresses.isEmpty()) {
-                            Address address = addresses.get(0);
-                            String locationText = address.getLocality() + ", " + address.getSubLocality() + " within 10 km";
-                            locationTextView.setText(locationText);
-                        } else {
-                            locationTextView.setText("Location unavailable");
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show();
+                Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                    if (addresses != null && !addresses.isEmpty()) {
+                        Address address = addresses.get(0);
+                        String locationText = address.getLocality() + ", " + address.getSubLocality() + " within 10 km";
+                        locationTextView.setText(locationText);
+                    } else {
+                        locationTextView.setText("Location unavailable");
                     }
-
-                    // Fetch data for each section
-                    fetchPopularRestaurantsFromYelp(latitude, longitude);  // Section 1: Popular
-                    fetchNearbyRestaurantsFromYelp(latitude, longitude);   // Section 2: Nearby
-                    fetchDinnerRestaurantsFromYelp(latitude, longitude);   // Section 3: Dinner
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show();
                 }
+
+                fetchRestaurants(latitude, longitude);
             }
         });
     }
 
-    private String getOrGeneratePrice(String businessId, String sectionName) {
-        if (restaurantPrices.containsKey(businessId)) {
-            Log.d("PriceCheck", "Using existing price for business ID: " + businessId + " in section: " + sectionName);
-            return restaurantPrices.get(businessId);
-        } else {
-            Random random = new Random();
-            // Generate random integer between 2 and 9 and append .99
-            int randomInt = 2 + random.nextInt(8);  // Generate random number between 2 and 9
-            String formattedPriceTag = String.format("US$ %d.99", randomInt);
-            restaurantPrices.put(businessId, formattedPriceTag);
-            Log.d("PriceCheck", "Generated new price for business ID: " + businessId + " in section: " + sectionName + " Price: " + formattedPriceTag);
-            return formattedPriceTag;
-        }
+    private void loadFavoritesFromFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        db.collection("users").document(userId).collection("favorites")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        favoriteMap.clear();
+                        for (DocumentSnapshot document : task.getResult()) {
+                            String businessId = document.getId();
+                            favoriteMap.put(businessId, true);
+                        }
+                        getCurrentLocation();
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to load favorites", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
+    private void fetchRestaurants(double latitude, double longitude) {
+        fetchPopularRestaurantsFromYelp(latitude, longitude);
+        fetchNearbyRestaurantsFromYelp(latitude, longitude);
+        fetchDinnerRestaurantsFromYelp(latitude, longitude);
+    }
 
-    // Section 1: Fetch popular restaurants
     private void fetchPopularRestaurantsFromYelp(double latitude, double longitude) {
+        long lastFetchTime = sharedPreferences.getLong(PREF_LAST_POPULAR_FETCH, 0);
+        if (System.currentTimeMillis() - lastFetchTime < CACHE_VALIDITY_DURATION && popularRestaurants != null && !popularRestaurants.isEmpty()) {
+            section1RecyclerView.setAdapter(new RestaurantAdapter(getContext(), popularRestaurants, restaurantPrices));
+            Log.d("CACHE", "Using cached popular restaurants");
+            return;
+        }
+
         YelpApiService yelpApiService = getYelpApiService();
+        String apiKey = "Bearer YOUR_API_KEY";
 
-        String apiKey = "Bearer Raj1vqpkZqqenzxYM7SaeNEITjBQHCz7gCSNgqQjVKzXGd9TrNjakyhQRZRDhCZmS5CN87UZQU5v0UXNoyeWOnOfrXE8jy0_17nTPsOllvXD455mAGdzTmyLWCgVZ3Yx";  // Replace with your actual Yelp API key
-
-        yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 10000, 25)
+        yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 10000, 50)
                 .enqueue(new Callback<YelpResponse>() {
                     @Override
                     public void onResponse(Call<YelpResponse> call, Response<YelpResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             popularRestaurants = new ArrayList<>();
-                            Random random = new Random();
                             for (Business business : response.body().getBusinesses()) {
-                                // Filter based on high ratings
-                                if (business.getRating() >= 4) {
+                                if (business.getRating() >= 4 && !addedBusinessIds.contains(business.getId())) {
                                     String formattedPriceTag = getOrGeneratePrice(business.getId(), "Popular Section");
+                                    boolean isFavorite = favoriteMap.getOrDefault(business.getId(), false);
                                     popularRestaurants.add(new Restaurant(
                                             business.getName(),
                                             business.getImageUrl(),
                                             String.format("%.1f km", business.getDistance() / 1000),
                                             business.getPriceRange(),
                                             business.getLocation().getAddress1(),
-                                            "Today 19:00-21:00",  // Placeholder for time
+                                            "Today 19:00-21:00",
                                             business.getId(),
-                                            business.getCoordinates().getLatitude(),  // Pass latitude
-                                            business.getCoordinates().getLongitude(), // Pass longitude
+                                            business.getCoordinates().getLatitude(),
+                                            business.getCoordinates().getLongitude(),
                                             formattedPriceTag,
-                                            false
+                                            isFavorite
                                     ));
+                                    addedBusinessIds.add(business.getId());
                                 }
                             }
                             section1RecyclerView.setAdapter(new RestaurantAdapter(getContext(), popularRestaurants, restaurantPrices));
+                            sharedPreferences.edit().putLong(PREF_LAST_POPULAR_FETCH, System.currentTimeMillis()).apply();
                         }
                     }
 
@@ -183,39 +201,45 @@ public class DiscoverFragment extends Fragment {
                 });
     }
 
-    // Section 2: Fetch nearby restaurants
     private void fetchNearbyRestaurantsFromYelp(double latitude, double longitude) {
+        long lastFetchTime = sharedPreferences.getLong(PREF_LAST_NEARBY_FETCH, 0);
+        if (System.currentTimeMillis() - lastFetchTime < CACHE_VALIDITY_DURATION && nearbyRestaurants != null && !nearbyRestaurants.isEmpty()) {
+            section2RecyclerView.setAdapter(new HorizontalRestaurantAdapter(getContext(), nearbyRestaurants, restaurantPrices, favoriteMap));
+            Log.d("CACHE", "Using cached nearby restaurants");
+            return;
+        }
+
         YelpApiService yelpApiService = getYelpApiService();
+        String apiKey = "Bearer YOUR_API_KEY";
 
-        String apiKey = "Bearer Raj1vqpkZqqenzxYM7SaeNEITjBQHCz7gCSNgqQjVKzXGd9TrNjakyhQRZRDhCZmS5CN87UZQU5v0UXNoyeWOnOfrXE8jy0_17nTPsOllvXD455mAGdzTmyLWCgVZ3Yx";  // Replace with your actual Yelp API key
-
-        yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 5000, 25)
+        yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 5000, 50)
                 .enqueue(new Callback<YelpResponse>() {
                     @Override
                     public void onResponse(Call<YelpResponse> call, Response<YelpResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             nearbyRestaurants = new ArrayList<>();
-                            Random random = new Random();
                             for (Business business : response.body().getBusinesses()) {
-                                String formattedPriceTag = getOrGeneratePrice(business.getId(), "Popular Section");
-                                boolean isFavorite = favoriteMap.containsKey(business.getId()) && favoriteMap.get(business.getId());
-
-
-                                nearbyRestaurants.add(new Restaurant(
-                                        business.getName(),
-                                        business.getImageUrl(),
-                                        String.format("%.1f km", business.getDistance() / 1000),
-                                        business.getPriceRange(),
-                                        business.getLocation().getAddress1(),
-                                        "Today 14:00-14:45", // Example time
-                                        business.getId(),
-                                        business.getCoordinates().getLatitude(),  // Pass latitude
-                                        business.getCoordinates().getLongitude(), // Pass longitude
-                                        formattedPriceTag,
-                                        isFavorite
-                                ));
+                                if (!addedBusinessIds.contains(business.getId())) {
+                                    String formattedPriceTag = getOrGeneratePrice(business.getId(), "Nearby Section");
+                                    boolean isFavorite = favoriteMap.getOrDefault(business.getId(), false);
+                                    nearbyRestaurants.add(new Restaurant(
+                                            business.getName(),
+                                            business.getImageUrl(),
+                                            String.format("%.1f km", business.getDistance() / 1000),
+                                            business.getPriceRange(),
+                                            business.getLocation().getAddress1(),
+                                            "Today 14:00-14:45",
+                                            business.getId(),
+                                            business.getCoordinates().getLatitude(),
+                                            business.getCoordinates().getLongitude(),
+                                            formattedPriceTag,
+                                            isFavorite
+                                    ));
+                                    addedBusinessIds.add(business.getId());
+                                }
                             }
                             section2RecyclerView.setAdapter(new HorizontalRestaurantAdapter(getContext(), nearbyRestaurants, restaurantPrices, favoriteMap));
+                            sharedPreferences.edit().putLong(PREF_LAST_NEARBY_FETCH, System.currentTimeMillis()).apply();
                         }
                     }
 
@@ -226,38 +250,45 @@ public class DiscoverFragment extends Fragment {
                 });
     }
 
-    // Section 3: Fetch dinner restaurants
     private void fetchDinnerRestaurantsFromYelp(double latitude, double longitude) {
+        long lastFetchTime = sharedPreferences.getLong(PREF_LAST_DINNER_FETCH, 0);
+        if (System.currentTimeMillis() - lastFetchTime < CACHE_VALIDITY_DURATION && dinnerRestaurants != null && !dinnerRestaurants.isEmpty()) {
+            section3RecyclerView.setAdapter(new HorizontalRestaurantAdapter(getContext(), dinnerRestaurants, restaurantPrices, favoriteMap));
+            Log.d("CACHE", "Using cached dinner restaurants");
+            return;
+        }
+
         YelpApiService yelpApiService = getYelpApiService();
+        String apiKey = "Bearer YOUR_API_KEY";
 
-        String apiKey = "Bearer Raj1vqpkZqqenzxYM7SaeNEITjBQHCz7gCSNgqQjVKzXGd9TrNjakyhQRZRDhCZmS5CN87UZQU5v0UXNoyeWOnOfrXE8jy0_17nTPsOllvXD455mAGdzTmyLWCgVZ3Yx";  // Replace with your actual Yelp API key
-
-        yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 7000, 25)
+        yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 7000, 50)
                 .enqueue(new Callback<YelpResponse>() {
                     @Override
                     public void onResponse(Call<YelpResponse> call, Response<YelpResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             dinnerRestaurants = new ArrayList<>();
-                            Random random = new Random();
                             for (Business business : response.body().getBusinesses()) {
-                                String formattedPriceTag = getOrGeneratePrice(business.getId(), "Popular Section");
-                                boolean isFavorite = favoriteMap.containsKey(business.getId()) && favoriteMap.get(business.getId());
-                                // Filter by categories or time (this is an example, you could customize this logic)
-                                dinnerRestaurants.add(new Restaurant(
-                                        business.getName(),
-                                        business.getImageUrl(),
-                                        String.format("%.1f km", business.getDistance() / 1000),
-                                        business.getPriceRange(),
-                                        business.getLocation().getAddress1(),
-                                        "Today 19:00-21:00",// Example time
-                                        business.getId(),
-                                        business.getCoordinates().getLatitude(),  // Pass latitude
-                                        business.getCoordinates().getLongitude(), // Pass longitude
-                                        formattedPriceTag,
-                                        isFavorite
-                                ));
+                                if (!addedBusinessIds.contains(business.getId())) {
+                                    String formattedPriceTag = getOrGeneratePrice(business.getId(), "Dinner Section");
+                                    boolean isFavorite = favoriteMap.getOrDefault(business.getId(), false);
+                                    dinnerRestaurants.add(new Restaurant(
+                                            business.getName(),
+                                            business.getImageUrl(),
+                                            String.format("%.1f km", business.getDistance() / 1000),
+                                            business.getPriceRange(),
+                                            business.getLocation().getAddress1(),
+                                            "Today 19:00-21:00",
+                                            business.getId(),
+                                            business.getCoordinates().getLatitude(),
+                                            business.getCoordinates().getLongitude(),
+                                            formattedPriceTag,
+                                            isFavorite
+                                    ));
+                                    addedBusinessIds.add(business.getId());
+                                }
                             }
                             section3RecyclerView.setAdapter(new HorizontalRestaurantAdapter(getContext(), dinnerRestaurants, restaurantPrices, favoriteMap));
+                            sharedPreferences.edit().putLong(PREF_LAST_DINNER_FETCH, System.currentTimeMillis()).apply();
                         }
                     }
 
@@ -268,7 +299,6 @@ public class DiscoverFragment extends Fragment {
                 });
     }
 
-    // Yelp API Service setup
     private YelpApiService getYelpApiService() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.yelp.com/")
@@ -278,11 +308,21 @@ public class DiscoverFragment extends Fragment {
         return retrofit.create(YelpApiService.class);
     }
 
+    private String getOrGeneratePrice(String businessId, String sectionName) {
+        if (restaurantPrices.containsKey(businessId)) {
+            return restaurantPrices.get(businessId);
+        } else {
+            String price = "US$ " + (2 + new Random().nextInt(8)) + ".99";
+            restaurantPrices.put(businessId, price);
+            return price;
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
+                loadFavoritesFromFirestore();
             } else {
                 Toast.makeText(requireContext(), "Location permission is needed to show your location", Toast.LENGTH_SHORT).show();
             }

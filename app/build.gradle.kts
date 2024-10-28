@@ -32,6 +32,8 @@ android {
     }
 }
 
+val nav_version = "2.8.3"
+
 dependencies {
 
     implementation(libs.appcompat)
@@ -57,6 +59,13 @@ dependencies {
     implementation ("androidx.viewpager2:viewpager2:1.0.0")
     implementation ("androidx.appcompat:appcompat:1.3.0")
     implementation ("com.airbnb.android:lottie:6.0.0")
+    implementation ("androidx.room:room-runtime:2.5.0")
+    implementation ("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation ("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation ("androidx.cardview:cardview:1.0.0")
+    implementation ("com.makeramen:roundedimageview:2.3.0")
+    annotationProcessor ("androidx.room:room-compiler:2.5.0")
+    implementation ("androidx.transition:transition:1.4.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

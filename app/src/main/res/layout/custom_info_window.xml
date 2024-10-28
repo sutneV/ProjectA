@@ -1,0 +1,63 @@
+<!-- custom_info_window.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingBottom="8dp"> <!-- Adding extra padding to position the dot -->
+
+    <!-- CardView containing the content -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        android:backgroundTint="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <!-- ImageView for Restaurant Image -->
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/info_window_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center_horizontal"
+                android:transitionName="restaurantNameTransition"
+                app:riv_corner_radius="12dp"
+                app:riv_border_width="2dp"
+                app:riv_border_color="#DDDDDD" />
+
+            <!-- Title TextView -->
+            <TextView
+                android:id="@+id/info_window_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingTop="4dp"
+                android:paddingBottom="2dp"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textColor="#000000"
+                android:gravity="center"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Small circle dot below the card -->
+    <View
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="-4dp"
+        android:layout_gravity="center"
+        android:backgroundTint="@android:color/white"
+        android:background="@drawable/info_circle_background" />
+
+</LinearLayout>

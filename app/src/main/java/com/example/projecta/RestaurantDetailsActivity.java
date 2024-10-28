@@ -1,8 +1,14 @@
 package com.example.projecta;
 
 import android.os.Bundle;
+import android.transition.AutoTransition;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,14 +49,22 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
     private TextView phoneTextView;
     private GoogleMap googleMap;
     private LatLng restaurantLatLng;  // For storing restaurant's lat/long
+    private String restaurantName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_details);
 
+        // Inflate the custom transition for rounded corners (assuming it's in res/transition folder)
+        Transition sharedTransition = TransitionInflater.from(this).inflateTransition(R.transition.rounded_transition);
+
+        // Set shared element transitions
+        getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.move));
+        getWindow().setSharedElementExitTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.move));
+
         // Get the passed data from the intent
-        String name = getIntent().getStringExtra("name");
+        restaurantName = getIntent().getStringExtra("name");
         String businessId = getIntent().getStringExtra("businessId");
         String time = getIntent().getStringExtra("time");
         String imageUrl = getIntent().getStringExtra("imageUrl");
@@ -70,7 +84,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         addressTextView = findViewById(R.id.restaurant_address);           // TextView for address
         phoneTextView = findViewById(R.id.restaurant_phone);        // TextView for phone
 
-        nameTextView.setText(name);
+        nameTextView.setText(restaurantName);
         timeTextView.setText(time);
 
         // Load the image into the ImageView
@@ -81,7 +95,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         reserveButton.setOnClickListener(v -> {
             // Create a Bundle to pass data to the bottom sheet
             Bundle args = new Bundle();
-            args.putString("restaurant_name", name);   // Pass restaurant name
+            args.putString("restaurant_name", restaurantName);   // Pass restaurant name
             args.putString("reservation_time", time);  // Pass reservation time
 
             // Create and show the ReserveBottomSheet with the arguments
@@ -133,24 +147,30 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
 
     // Toggle the visibility of the "More Information" section
     private void toggleMoreInfo() {
-        if (isExpanded) {
-            moreInfoDetails.setVisibility(View.GONE);
-            expandArrow.animate().rotation(0).start();  // Rotate arrow back up
-        } else {
+        if (!isExpanded) {  // Only apply animation on expansion
+            Fade fadeIn = new Fade(Fade.IN);
+            fadeIn.setDuration(300);
+            TransitionManager.beginDelayedTransition((ViewGroup) moreInfoDetails.getParent(), fadeIn);
             moreInfoDetails.setVisibility(View.VISIBLE);
-            expandArrow.animate().rotation(90).start();  // Rotate arrow downwards
+            expandArrow.animate().rotation(90).setDuration(300).start();
+        } else {
+            moreInfoDetails.setVisibility(View.GONE);
+            expandArrow.animate().rotation(0).setDuration(300).start();
         }
         isExpanded = !isExpanded;
     }
 
     // Toggle the visibility of the "Address" section
     private void toggleAddressInfo() {
-        if (isAddressExpanded) {
-            addressDetails.setVisibility(View.GONE);
-            addressExpandArrow.animate().rotation(0).start();  // Rotate arrow back up
-        } else {
+        if (!isAddressExpanded) {  // Only apply animation on expansion
+            Fade fadeIn = new Fade(Fade.IN);
+            fadeIn.setDuration(300);
+            TransitionManager.beginDelayedTransition((ViewGroup) addressDetails.getParent(), fadeIn);
             addressDetails.setVisibility(View.VISIBLE);
-            addressExpandArrow.animate().rotation(90).start();  // Rotate arrow downwards
+            addressExpandArrow.animate().rotation(90).setDuration(300).start();
+        } else {
+            addressDetails.setVisibility(View.GONE);
+            addressExpandArrow.animate().rotation(0).setDuration(300).start();
         }
         isAddressExpanded = !isAddressExpanded;
     }
@@ -159,7 +179,9 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
     public void onMapReady(GoogleMap map) {
         googleMap = map;
         if (restaurantLatLng != null && restaurantLatLng.latitude != 0 && restaurantLatLng.longitude != 0) {
-            googleMap.addMarker(new MarkerOptions().position(restaurantLatLng).title("Restaurant Location"));
+            googleMap.addMarker(new MarkerOptions()
+                    .position(restaurantLatLng)
+                    .title(restaurantName));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurantLatLng, 15));
         } else {
             Log.e("MapError", "Invalid restaurantLatLng values: " + restaurantLatLng);

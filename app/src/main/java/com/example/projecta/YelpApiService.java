@@ -22,4 +22,21 @@ public interface YelpApiService {
             @Header("Authorization") String apiKey,
             @Path("id") String businessId
     );
+
+    @GET("v3/businesses/{id}")
+    Call<Restaurant> getRestaurantDetails(
+            @Header("Authorization") String apiKey,
+            @Path("id") String businessId
+    );
+
+    @GET("v3/businesses/search")
+    Call<YelpResponse> getRestaurants(
+            @Header("Authorization") String authHeader,
+            @Query("latitude") double latitude,
+            @Query("longitude") double longitude,
+            @Query("term") String term,
+            @Query("radius") int radius,
+            @Query("limit") int limit,
+            @Query("offset") int offset
+    );
 }

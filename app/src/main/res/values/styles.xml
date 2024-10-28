@@ -19,4 +19,19 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item> <!-- This makes the image circular -->
     </style>
+
+    <style name="ExpandedAppBar" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="CollapsedAppBar" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="CustomToolbarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="android:fontFamily">@font/tw_cen_mt</item> <!-- Set font family here -->
+    </style>
+
 </resources>

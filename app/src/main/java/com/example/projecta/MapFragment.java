@@ -1,8 +1,8 @@
 package com.example.projecta;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +19,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.gms.maps.model.LatLngBounds;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,25 +37,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private GoogleMap gMap;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private PlacesClient placesClient;
-    private final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private HashMap<String, Restaurant> restaurantMap = new HashMap<>();
+    private HashMap<String, Marker> markerMap = new HashMap<>();  // Map for storing restaurant ID to its marker
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-        // Initialize MapView
         mapView = rootView.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        // Initialize FusedLocationProviderClient to get the user's location
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
-
-        // Initialize Places API client
-        Places.initialize(requireContext(), "YOUR_GOOGLE_MAPS_API_KEY");
-        placesClient = Places.createClient(requireContext());
 
         return rootView;
     }
@@ -66,85 +58,148 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
 
-        // Check if permission is granted
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Request location permissions if not granted
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
 
-        // Enable MyLocation Layer on the map
         gMap.setMyLocationEnabled(true);
 
-        // Get the user's location and find nearby restaurants
+        // Set the custom InfoWindowAdapter
+        gMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
+
+        gMap.setOnMarkerClickListener(marker -> {
+            marker.showInfoWindow();
+            return true;
+        });
+
+        gMap.setOnInfoWindowClickListener(marker -> {
+            Restaurant restaurant = (Restaurant) marker.getTag();
+            if (restaurant != null) {
+                Intent intent = new Intent(getContext(), RestaurantDetailsActivity.class);
+                intent.putExtra("name", restaurant.getName());
+                intent.putExtra("distance", restaurant.getDistance());
+                intent.putExtra("priceRange", restaurant.getPriceRange());
+                intent.putExtra("imageUrl", restaurant.getImageUrl());
+                intent.putExtra("time", restaurant.getTime());
+                intent.putExtra("businessId", restaurant.getBusinessId());
+                intent.putExtra("latitude", restaurant.getLatitude());
+                intent.putExtra("longitude", restaurant.getLongitude());
+                startActivity(intent);
+            }
+        });
+
         getDeviceLocationAndShowNearbyRestaurants();
     }
 
     private void getDeviceLocationAndShowNearbyRestaurants() {
-        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-
-                    // Move the camera to the user's location
-                    gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 14));
-
-                    // Find and pin nearby restaurants using the Places API Web Service
-                    findNearbyRestaurants(userLocation);
-                }
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
+            if (location != null) {
+                LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 14));
+                fetchRestaurantsFromYelp(userLocation.latitude, userLocation.longitude);
             }
         });
     }
 
-    // Fetch nearby restaurants using Places API Web Service
-    private void findNearbyRestaurants(LatLng location) {
+    private void fetchRestaurantsFromYelp(double latitude, double longitude) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             OkHttpClient client = new OkHttpClient();
-
-            String apiKey = "AIzaSyB9ERUPhy8YK4JaIR7T4R_viu0fak5cUHQ";
+            String apiKey = "Bearer Raj1vqpkZqqenzxYM7SaeNEITjBQHCz7gCSNgqQjVKzXGd9TrNjakyhQRZRDhCZmS5CN87UZQU5v0UXNoyeWOnOfrXE8jy0_17nTPsOllvXD455mAGdzTmyLWCgVZ3Yx"; // Replace with your Yelp API key
             String requestUrl = String.format(Locale.getDefault(),
-                    "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&radius=1500&type=restaurant&key=%s",
-                    location.latitude, location.longitude, apiKey);
+                    "https://api.yelp.com/v3/businesses/search?latitude=%f&longitude=%f&radius=40000&categories=restaurants",
+                    latitude, longitude);
 
-            Request request = new Request.Builder().url(requestUrl).build();
+            Request request = new Request.Builder()
+                    .url(requestUrl)
+                    .addHeader("Authorization", apiKey)
+                    .build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful() && response.body() != null) {
                     String responseData = response.body().string();
                     JSONObject json = new JSONObject(responseData);
-                    JSONArray results = json.getJSONArray("results");
+                    JSONArray businesses = json.getJSONArray("businesses");
 
                     requireActivity().runOnUiThread(() -> {
-                        for (int i = 0; i < results.length(); i++) {
+                        for (int i = 0; i < businesses.length(); i++) {
                             try {
-                                JSONObject place = results.getJSONObject(i);
-                                JSONObject geometry = place.getJSONObject("geometry");
-                                JSONObject placeLocation = geometry.getJSONObject("location"); // Changed variable name
+                                JSONObject business = businesses.getJSONObject(i);
+                                String name = business.getString("name");
+                                String id = business.getString("id");
+                                JSONObject coordinates = business.getJSONObject("coordinates");
+                                double lat = coordinates.getDouble("latitude");
+                                double lng = coordinates.getDouble("longitude");
 
-                                String placeName = place.getString("name");
-                                LatLng placeLatLng = new LatLng(placeLocation.getDouble("lat"), placeLocation.getDouble("lng")); // Using renamed variable
+                                Restaurant restaurant = new Restaurant(
+                                        name,
+                                        business.getString("image_url"),
+                                        String.format("%.1f km", business.getDouble("distance") / 1000),
+                                        business.optString("price", "N/A"),
+                                        business.getJSONObject("location").getString("address1"),
+                                        "Today 19:00-21:00",
+                                        id,
+                                        lat,
+                                        lng,
+                                        business.optString("price", "Price range unknown"),
+                                        false
+                                );
+                                restaurantMap.put(id, restaurant);
 
-                                // Add a marker for each nearby restaurant
-                                gMap.addMarker(new MarkerOptions()
-                                        .position(placeLatLng)
-                                        .title(placeName)
+                                LatLng restaurantLocation = new LatLng(lat, lng);
+                                Marker marker = gMap.addMarker(new MarkerOptions()
+                                        .position(restaurantLocation)
+                                        .title(name)
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                                marker.setTag(restaurant);
+                                markerMap.put(id, marker);  // Store marker in markerMap
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     });
+                } else {
+                    showToast("Failed to fetch restaurants from Yelp.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(requireContext(), "Error fetching nearby restaurants.", Toast.LENGTH_SHORT).show();
-                });
+                showToast("Error fetching data from Yelp.");
             }
         });
+    }
+
+    public void filterMarkers(String query) {
+        if (gMap == null) return;
+
+        gMap.clear();  // Clear all existing markers
+
+        if (query.isEmpty()) {
+            // If query is empty, show all markers
+            for (Restaurant restaurant : restaurantMap.values()) {
+                addMarker(restaurant);
+            }
+        } else {
+            // Otherwise, show only the markers that match the query
+            for (Restaurant restaurant : restaurantMap.values()) {
+                if (restaurant.getName().toLowerCase().contains(query.toLowerCase())) {
+                    addMarker(restaurant);
+                }
+            }
+        }
+    }
+
+    private void addMarker(Restaurant restaurant) {
+        LatLng position = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
+        Marker marker = gMap.addMarker(new MarkerOptions()
+                .position(position)
+                .title(restaurant.getName())
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        marker.setTag(restaurant);
+    }
+
+    private void showToast(String message) {
+        requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show());
     }
 
     @Override
@@ -175,5 +230,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getDeviceLocationAndShowNearbyRestaurants();
+        } else {
+            showToast("Location permission is required to show nearby restaurants.");
+        }
     }
 }

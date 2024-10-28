@@ -35,6 +35,7 @@
                 android:contentDescription="Restaurant Image"
                 android:layout_gravity="center"
                 android:clipToOutline="true"
+                android:transitionName="restaurantImageTransition"
                 android:background="@drawable/circle_outline"
                 app:shapeAppearanceOverlay="@style/CircularShape" />
 

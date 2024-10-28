@@ -1,65 +1,60 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    android:layout_margin="12dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Restaurant Image -->
         <ImageView
             android:id="@+id/restaurant_image"
-            android:layout_width="180dp"
-            android:layout_height="100dp"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_placeholder_image"
-            android:transitionName="restaurantImageTransition"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Price Tag -->
         <TextView
             android:id="@+id/restaurant_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="US$4.99"
             android:fontFamily="@font/tw_cen_mt"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:textColor="@android:color/white"
             android:background="@drawable/price_tag_background"
-            android:padding="4dp"
+            android:padding="6dp"
             android:textStyle="bold"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="@id/restaurant_image"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp" />
 
-        <!-- Favorite Icon (with dark gray circle background) -->
         <ImageView
             android:id="@+id/favorite_icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/favorite_icon_background"
             android:padding="8dp"
             android:src="@drawable/ic_favorite_outline"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Restaurant Details Section -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp"
+            android:padding="10dp"
             app:layout_constraintTop_toBottomOf="@id/restaurant_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -72,11 +67,10 @@
                 android:fontFamily="@font/tw_cen_mt"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
-                android:transitionName="restaurantNameTransition"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="6dp" />
 
             <TextView
                 android:id="@+id/restaurant_distance"
@@ -84,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:text="Distance: 3.0 km"
                 android:fontFamily="@font/tw_cen_mt"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
@@ -93,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:text="$$"
                 android:fontFamily="@font/tw_cen_mt"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/holo_red_dark" />
 
@@ -104,8 +98,8 @@
                 android:text="Today 14:00-14:45"
                 android:fontFamily="@font/tw_cen_mt"
                 android:textColor="@android:color/black"
-                android:textSize="12sp"
-                android:layout_marginBottom="4dp" />
+                android:textSize="14sp"
+                android:layout_marginBottom="6dp" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -21,14 +21,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.List;
 
-public class HorizontalRestaurantAdapter extends RecyclerView.Adapter<HorizontalRestaurantAdapter.ViewHolder> {
+public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.ViewHolder> {
 
     private Context context;
     private List<Restaurant> restaurantList;
     private HashMap<String, String> priceMap;
     private HashMap<String, Boolean> favoriteMap;
 
-    public HorizontalRestaurantAdapter(Context context, List<Restaurant> restaurantList, HashMap<String, String> priceMap, HashMap<String, Boolean> favoriteMap) {
+    public RestaurantListAdapter(Context context, List<Restaurant> restaurantList, HashMap<String, String> priceMap, HashMap<String, Boolean> favoriteMap) {
         this.context = context;
         this.restaurantList = restaurantList;
         this.priceMap = priceMap;
@@ -38,7 +38,7 @@ public class HorizontalRestaurantAdapter extends RecyclerView.Adapter<Horizontal
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.horizontal_restaurant_card, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.list_restaurant_card, parent, false);
         return new ViewHolder(view);
     }
 
@@ -90,6 +90,7 @@ public class HorizontalRestaurantAdapter extends RecyclerView.Adapter<Horizontal
                     ViewCompat.getTransitionName(holder.restaurantImage) // The transition name
             );
             context.startActivity(intent, options.toBundle());
+
         });
     }
 
