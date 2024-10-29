@@ -32,6 +32,7 @@
 
     <style name="CustomToolbarStyle" parent="Widget.AppCompat.Toolbar">
         <item name="android:fontFamily">@font/tw_cen_mt</item> <!-- Set font family here -->
+        <item name="android:gravity">center_vertical</item> <!-- Set text size here -->
     </style>
 
 </resources>
