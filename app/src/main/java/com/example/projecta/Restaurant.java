@@ -2,6 +2,7 @@ package com.example.projecta;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Restaurant {
@@ -16,10 +17,11 @@ public class Restaurant {
     private double longitude;
     private String priceTag;
     private boolean isFavorite;
+    private List<String> categories;
 
     // Constructor with arguments
     public Restaurant(String name, String imageUrl, String distance, String price, String address, String time,
-                      String businessId, double latitude, double longitude, String priceTag, boolean isFavorite) {
+                      String businessId, double latitude, double longitude, String priceTag, boolean isFavorite, List<String> categories) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.distance = distance;
@@ -31,6 +33,7 @@ public class Restaurant {
         this.longitude = longitude;
         this.priceTag = priceTag;
         this.isFavorite = isFavorite;
+        this.categories = categories;
     }
 
     // No-argument constructor for Firebase deserialization
@@ -90,6 +93,15 @@ public class Restaurant {
         isFavorite = favorite;
     }
 
+    // Getters and Setters for categories
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
     // Method to convert Restaurant object to a Map<String, Object> for Firestore
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
@@ -104,6 +116,7 @@ public class Restaurant {
         map.put("longitude", getLongitude());
         map.put("priceTag", getPriceTag());
         map.put("isFavorite", isFavorite());
+        map.put("categories", getCategories());  // Adding categories to the map
         return map;
     }
 
@@ -121,6 +134,7 @@ public class Restaurant {
         restaurant.longitude = document.getDouble("longitude");
         restaurant.priceTag = document.getString("priceTag");
         restaurant.isFavorite = document.getBoolean("isFavorite") != null && document.getBoolean("isFavorite");
+        restaurant.categories = (List<String>) document.get("categories");  // Retrieve categories as a List<String>
         return restaurant;
     }
 }

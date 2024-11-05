@@ -1,29 +1,32 @@
 package com.example.projecta;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import com.google.android.material.tabs.TabLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.tabs.TabLayout;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +34,19 @@ import java.util.Locale;
 
 public class BrowseFragment extends Fragment {
 
+    private static final int FILTER_REQUEST_CODE = 1001;
+
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TextView locationTextView;
     private EditText searchInput;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final int REQUEST_CODE_FILTER_ACTIVITY = 2;
     private ListFragment listFragment;
     private MapFragment mapFragment;
+    private ImageButton filterButton;
+
 
     @Nullable
     @Override
@@ -49,6 +57,7 @@ public class BrowseFragment extends Fragment {
         viewPager = view.findViewById(R.id.view_pager);
         locationTextView = view.findViewById(R.id.location);
         searchInput = view.findViewById(R.id.search_input);
+        filterButton = view.findViewById(R.id.filter_button);
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
@@ -62,6 +71,7 @@ public class BrowseFragment extends Fragment {
         }
 
         setupSearchListener();
+        setupFilterButton();
 
         return view;
     }
@@ -87,12 +97,9 @@ public class BrowseFragment extends Fragment {
                 int currentTab = tabLayout.getSelectedTabPosition();
                 String query = s.toString();
 
-                // Check which tab is currently selected
                 if (currentTab == 0 && listFragment != null) {
-                    // "List" tab selected
                     listFragment.filterList(query);
                 } else if (currentTab == 1 && mapFragment != null) {
-                    // "Map" tab selected
                     mapFragment.filterMarkers(query);
                 }
             }
@@ -100,6 +107,29 @@ public class BrowseFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+    }
+
+    private void setupFilterButton() {
+        filterButton.setOnClickListener(v -> {
+            Intent filterIntent = new Intent(getContext(), FilterActivity.class);
+            startActivityForResult(filterIntent, REQUEST_CODE_FILTER_ACTIVITY); // Use new request code here
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_FILTER_ACTIVITY && resultCode == AppCompatActivity.RESULT_OK) {
+            if (data != null && data.hasExtra("selected_category")) {
+                String selectedCategory = data.getStringExtra("selected_category");
+                Log.d("BrowseFragment", "Selected Category: " + selectedCategory);
+                if (listFragment != null) {
+                    listFragment.applyCategoryFilter(selectedCategory);
+                }
+            } else {
+                Log.e("BrowseFragment", "No category data returned from FilterActivity");
+            }
+        }
     }
 
     private void getCurrentLocation() {

@@ -59,239 +59,545 @@
                     android:textStyle="bold" />
             </FrameLayout>
 
-            <!-- Restaurant Info Section -->
+            <!-- Restaurant Info Section with Product Name, Time, and Price Tag -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="12dp">
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:gravity="center_vertical">
+
+                <!-- Product Name and Time Section -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/restaurant_product_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Magic Bag"
+                        android:fontFamily="@font/tw_cen_mt"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="4dp">
+
+                        <!-- Time Icon -->
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_time"
+                            android:layout_marginEnd="4dp"
+                            app:tint="@android:color/darker_gray" />
+
+                        <!-- Time Text -->
+                        <TextView
+                            android:id="@+id/restaurant_detail_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Today 8:15 PM - 9:15 PM"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Price Tag Section - Aligned to the Right -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/rounded_price_background"
+                    android:padding="8dp"
+                    android:gravity="center">
+
+                    <!-- Original Price (Strike-through applied programmatically) -->
+                    <TextView
+                        android:id="@+id/original_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MYR 24.99"
+                        android:textColor="@android:color/darker_gray"
+                        android:fontFamily="@font/tw_cen_mt"
+                        android:textSize="12sp"
+                        android:textStyle="italic" />
+
+                    <!-- Discounted Price -->
+                    <TextView
+                        android:id="@+id/discounted_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MYR 14.99"
+                        android:textColor="@android:color/white"
+                        android:fontFamily="@font/tw_cen_mt"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="6dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+            </LinearLayout>
+
+            <!-- Address (Expandable) -->
+            <LinearLayout
+                android:id="@+id/address_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_location"/>
 
                 <TextView
-                    android:id="@+id/restaurant_product_name"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/restaurant_address"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Magic Bag"
+                    android:text="Address will be loaded here"
                     android:fontFamily="@font/tw_cen_mt"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"/>
 
+                <!-- Arrow Icon for Expand/Collapse -->
+                <ImageView
+                    android:id="@+id/address_expand_arrow"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_expand_more"
+                    android:layout_gravity="end" />
+            </LinearLayout>
+
+            <!-- Address Drop-Down Content (Initially Hidden) -->
+            <LinearLayout
+                android:id="@+id/address_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone">
+
+                <!-- Google Maps Fragment for displaying location -->
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="6dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+            </LinearLayout>
+
+            <!-- Phone -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_phone"/>
+
+                <TextView
+                    android:id="@+id/restaurant_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phone number will be loaded here"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:layout_marginStart="16dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="6dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+            </LinearLayout>
+
+            <!-- More Information - Dropdown Trigger -->
+            <LinearLayout
+                android:id="@+id/more_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_more_info"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="More Information about the store"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1" />
+
+                <!-- Arrow Icon for Expand/Collapse -->
+                <ImageView
+                    android:id="@+id/expand_arrow"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_expand_more"
+                    android:layout_gravity="end" />
+            </LinearLayout>
+
+            <!-- Dropdown Content (Initially Hidden) -->
+            <LinearLayout
+                android:id="@+id/more_info_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <!-- Operating Hours TextView -->
+                <TextView
+                    android:id="@+id/operating_hours_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:text="Operating hours will appear here..." />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="6dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical">
+
+                <!-- ImageView for the image on the left side -->
+                <ImageView
+                    android:id="@+id/bag_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_bag_image" />
+
+                <!-- LinearLayout for text description on the right side -->
                 <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:orientation="vertical">
+
+                    <!-- TextView for the description -->
+                    <TextView
+                        android:id="@+id/bag_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="It's a surprise! When you buy a bag, it will be filled with delicious food that the store has left at the end of the day."
+                        android:fontFamily="@font/tw_cen_mt"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:padding="8dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/category_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="8dp"
+                        android:gravity="start"
+                        android:showDividers="middle">
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="6dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/allergen_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_allergen"/>
+
+                <TextView
+                    android:id="@+id/restaurant_allergen_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="This food may contain..."
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"/>
+
+                <!-- Arrow Icon for Expand/Collapse -->
+                <ImageView
+                    android:id="@+id/allergen_info_expand_arrow"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_expand_more"
+                    android:layout_gravity="end" />
+            </LinearLayout>
+
+            <!-- Allergen Details (Initially Hidden) -->
+            <LinearLayout
+                android:id="@+id/allergen_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:padding="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <!-- Dynamic Allergen Icons will be added here programmatically -->
+                <LinearLayout
+                    android:id="@+id/allergen_icons_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="8dp">
+                    android:gravity="center_vertical" />
+            </LinearLayout>
 
-                    <!-- Time Icon -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="6dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rating_summary_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="16dp"
+                android:background="@drawable/rating_summary_card_background"
+                android:padding="16dp"
+                android:gravity="center_horizontal">
+
+                <!-- Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="WHAT OTHERS ARE SAYING"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Heart Icon and Rating Summary -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_time"
-                        android:tint="@android:color/darker_gray"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_heart" />
 
-                    <!-- Time Text -->
                     <TextView
-                        android:id="@+id/restaurant_detail_time"
+                        android:id="@+id/rating_summary_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Today 8:15 PM - 9:15 PM"
+                        android:layout_marginStart="8dp"
+                        android:text="People love this Surprise Bag"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
                         android:fontFamily="@font/tw_cen_mt"
-                        android:textColor="@android:color/darker_gray" />
+                        android:textStyle="bold" />
                 </LinearLayout>
+
+                <!-- Rating Percentage -->
+                <TextView
+                    android:id="@+id/rating_percentage_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="82% rated their purchase at least 3 out of 5 stars."
+                    android:textSize="14sp"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="@font/tw_cen_mt" />
 
                 <!-- Divider -->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_marginTop="6dp" />
+                    android:layout_marginVertical="8dp"
+                    android:background="?android:attr/listDivider" />
 
-                <!-- Address (Expandable) -->
+                <!-- Top 3 Highlights Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TOP 3 HIGHLIGHTS"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Highlights List -->
                 <LinearLayout
-                    android:id="@+id/address_container"
+                    android:id="@+id/highlights_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical">
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_location"/>
-
-                    <TextView
-                        android:id="@+id/restaurant_address"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Address will be loaded here"
-                        android:fontFamily="@font/tw_cen_mt"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"/>
-
-                    <!-- Arrow Icon for Expand/Collapse -->
-                    <ImageView
-                        android:id="@+id/address_expand_arrow"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_expand_more"
-                        android:layout_gravity="end" />
-                </LinearLayout>
-
-                <!-- Address Drop-Down Content (Initially Hidden) -->
-                <LinearLayout
-                    android:id="@+id/address_details"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:visibility="gone">
-
-                    <!-- Google Maps Fragment for displaying location -->
-                    <fragment
-                        android:id="@+id/map"
-                        android:name="com.google.android.gms.maps.SupportMapFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"/>
-                </LinearLayout>
-
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_marginTop="6dp" />
-
-                <!-- Phone -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_phone"/>
-
-                    <TextView
-                        android:id="@+id/restaurant_phone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Phone number will be loaded here"
-                        android:fontFamily="@font/tw_cen_mt"
-                        android:layout_marginStart="16dp"/>
-                </LinearLayout>
-
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_marginTop="6dp" />
-
-                <!-- More Information - Dropdown Trigger -->
-                <LinearLayout
-                    android:id="@+id/more_info_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_more_info"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="More Information about the store"
-                        android:fontFamily="@font/tw_cen_mt"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1" />
-
-                    <!-- Arrow Icon for Expand/Collapse -->
-                    <ImageView
-                        android:id="@+id/expand_arrow"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_expand_more"
-                        android:layout_gravity="end" />
-                </LinearLayout>
-
-                <!-- Dropdown Content (Initially Hidden) -->
-                <LinearLayout
-                    android:id="@+id/more_info_details"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:visibility="gone">
-
-                    <!-- Operating Hours TextView -->
-                    <TextView
-                        android:id="@+id/operating_hours_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/tw_cen_mt"
-                        android:text="Operating hours will appear here..." />
-                </LinearLayout>
-
-                <!-- Divider after More Information -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_marginTop="6dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical">
-
-                    <!-- ImageView for the image on the left side -->
-                    <ImageView
-                        android:id="@+id/bag_image"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_bag_image" />
-
-                    <!-- LinearLayout for text description on the right side -->
+                    <!-- Highlight 1 -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingVertical="8dp">
 
-                        <!-- TextView for the description -->
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_quick_pickup" />
+
                         <TextView
-                            android:id="@+id/bag_description"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="It's a surprise! When you buy a bag, it will be filled with delicious food that the store has left at the end of the day."
-                            android:fontFamily="@font/tw_cen_mt"
-                            android:textSize="16sp"
+                            android:layout_marginStart="16dp"
+                            android:text="Quick Pick-up"
+                            android:textSize="14sp"
                             android:textColor="@android:color/black"
-                            android:padding="8dp"/>
+                            android:fontFamily="@font/tw_cen_mt" />
+                    </LinearLayout>
 
-                        <!-- Category tag (e.g., Baked Goods) -->
+                    <!-- Highlight 2 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingVertical="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_great_value" />
+
                         <TextView
-                            android:id="@+id/category_tag"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Baked Goods"
-                            android:fontFamily="@font/tw_cen_mt"
-                            android:padding="8dp"
-                            android:background="@drawable/category_background"
-                            android:layout_marginTop="8dp"/>
+                            android:layout_marginStart="16dp"
+                            android:text="Great Value"
+                            android:textSize="14sp"
+                            android:textColor="@android:color/black"
+                            android:fontFamily="@font/tw_cen_mt" />
+                    </LinearLayout>
+
+                    <!-- Highlight 3 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingVertical="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_allergy_friendly" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:text="Allergy-friendly"
+                            android:textSize="14sp"
+                            android:textColor="@android:color/black"
+                            android:fontFamily="@font/tw_cen_mt" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -313,5 +619,4 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

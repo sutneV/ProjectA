@@ -1,0 +1,5 @@
+<!-- res/drawable/circular_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#50C7C7"/>
+    <corners android:radius="10dp"/> <!-- Match half of button size for a perfect circle -->
+</shape>

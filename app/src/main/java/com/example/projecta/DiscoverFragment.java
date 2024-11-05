@@ -171,25 +171,41 @@ public class DiscoverFragment extends Fragment {
                             popularRestaurants = new ArrayList<>();
                             for (Business business : response.body().getBusinesses()) {
                                 if (business.getRating() >= 4 && !addedBusinessIds.contains(business.getId())) {
+
+                                    // Generate or retrieve the price tag
                                     String formattedPriceTag = getOrGeneratePrice(business.getId(), "Popular Section");
                                     boolean isFavorite = favoriteMap.getOrDefault(business.getId(), false);
+
+                                    // Extract categories as a List<String>
+                                    List<String> categories = new ArrayList<>();
+                                    if (business.getCategories() != null) {
+                                        for (Business.Category category : business.getCategories()) {
+                                            categories.add(category.getTitle());
+                                        }
+                                    }
+
+                                    // Create and add the Restaurant object
                                     popularRestaurants.add(new Restaurant(
                                             business.getName(),
                                             business.getImageUrl(),
                                             String.format("%.1f km", business.getDistance() / 1000),
                                             business.getPriceRange(),
                                             business.getLocation().getAddress1(),
-                                            "Today 19:00-21:00",
+                                            "Today 19:00-21:00", // Default time or dynamic if available
                                             business.getId(),
                                             business.getCoordinates().getLatitude(),
                                             business.getCoordinates().getLongitude(),
                                             formattedPriceTag,
-                                            isFavorite
+                                            isFavorite,
+                                            categories // Pass the list of categories
                                     ));
+
                                     addedBusinessIds.add(business.getId());
                                 }
                             }
+                            // Set the adapter with the populated list
                             section1RecyclerView.setAdapter(new RestaurantAdapter(getContext(), popularRestaurants, restaurantPrices));
+                            // Update the cache timestamp
                             sharedPreferences.edit().putLong(PREF_LAST_POPULAR_FETCH, System.currentTimeMillis()).apply();
                         }
                     }
@@ -200,6 +216,7 @@ public class DiscoverFragment extends Fragment {
                     }
                 });
     }
+
 
     private void fetchNearbyRestaurantsFromYelp(double latitude, double longitude) {
         long lastFetchTime = sharedPreferences.getLong(PREF_LAST_NEARBY_FETCH, 0);
@@ -222,6 +239,14 @@ public class DiscoverFragment extends Fragment {
                                 if (!addedBusinessIds.contains(business.getId())) {
                                     String formattedPriceTag = getOrGeneratePrice(business.getId(), "Nearby Section");
                                     boolean isFavorite = favoriteMap.getOrDefault(business.getId(), false);
+
+                                    // Extract category names as a List of Strings
+                                    List<String> categoryNames = new ArrayList<>();
+                                    for (Business.Category category : business.getCategories()) {
+                                        categoryNames.add(category.getTitle()); // Assuming getTitle() returns category name
+                                    }
+
+                                    // Create and add the Restaurant object to the list
                                     nearbyRestaurants.add(new Restaurant(
                                             business.getName(),
                                             business.getImageUrl(),
@@ -233,7 +258,8 @@ public class DiscoverFragment extends Fragment {
                                             business.getCoordinates().getLatitude(),
                                             business.getCoordinates().getLongitude(),
                                             formattedPriceTag,
-                                            isFavorite
+                                            isFavorite,
+                                            categoryNames // Pass the list of category names here
                                     ));
                                     addedBusinessIds.add(business.getId());
                                 }
@@ -249,6 +275,7 @@ public class DiscoverFragment extends Fragment {
                     }
                 });
     }
+
 
     private void fetchDinnerRestaurantsFromYelp(double latitude, double longitude) {
         long lastFetchTime = sharedPreferences.getLong(PREF_LAST_DINNER_FETCH, 0);
@@ -271,6 +298,14 @@ public class DiscoverFragment extends Fragment {
                                 if (!addedBusinessIds.contains(business.getId())) {
                                     String formattedPriceTag = getOrGeneratePrice(business.getId(), "Dinner Section");
                                     boolean isFavorite = favoriteMap.getOrDefault(business.getId(), false);
+
+                                    // Extract category names as a List of Strings
+                                    List<String> categoryNames = new ArrayList<>();
+                                    for (Business.Category category : business.getCategories()) {
+                                        categoryNames.add(category.getTitle()); // Assuming getTitle() returns category name
+                                    }
+
+                                    // Create and add the Restaurant object to the list
                                     dinnerRestaurants.add(new Restaurant(
                                             business.getName(),
                                             business.getImageUrl(),
@@ -282,7 +317,8 @@ public class DiscoverFragment extends Fragment {
                                             business.getCoordinates().getLatitude(),
                                             business.getCoordinates().getLongitude(),
                                             formattedPriceTag,
-                                            isFavorite
+                                            isFavorite,
+                                            categoryNames // Pass the list of category names here
                                     ));
                                     addedBusinessIds.add(business.getId());
                                 }
@@ -299,6 +335,7 @@ public class DiscoverFragment extends Fragment {
                 });
     }
 
+
     private YelpApiService getYelpApiService() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.yelp.com/")
@@ -312,7 +349,7 @@ public class DiscoverFragment extends Fragment {
         if (restaurantPrices.containsKey(businessId)) {
             return restaurantPrices.get(businessId);
         } else {
-            String price = "US$ " + (2 + new Random().nextInt(8)) + ".99";
+            String price = "MYR " + "14.99";
             restaurantPrices.put(businessId, price);
             return price;
         }

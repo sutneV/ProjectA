@@ -3,6 +3,7 @@ package com.example.projecta;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,7 +135,8 @@ public class ListFragment extends Fragment {
                                             business.getCoordinates().getLatitude(),
                                             business.getCoordinates().getLongitude(),
                                             formattedPriceTag,
-                                            isFavorite
+                                            isFavorite,
+                                            business.getCategoryNames()
                                     );
 
                                     restaurantList.add(restaurant);
@@ -193,6 +195,32 @@ public class ListFragment extends Fragment {
             restaurantList.clear();
             restaurantList.addAll(filteredList);
         }
+        adapter.notifyDataSetChanged();
+    }
+
+    // Apply category filter to the list
+    public void applyCategoryFilter(String category) {
+        Log.d("ListFragment", "Applying filter for category: " + category);
+
+        // Start with an empty filtered list
+        List<Restaurant> filteredList = new ArrayList<>();
+
+        // Iterate through originalRestaurantList to apply the category filter
+        for (Restaurant restaurant : originalRestaurantList) {
+            Log.d("ListFragment", "Restaurant Name: " + restaurant.getName() + ", Categories: " + restaurant.getCategories());
+
+            // Check if the category matches or if "Show all" is selected
+            if (category.equals("Show all") || restaurant.getCategories().contains(category.toLowerCase())) {
+                filteredList.add(restaurant);
+            }
+        }
+
+        // Clear and update restaurantList with filtered results
+        restaurantList.clear();
+        restaurantList.addAll(filteredList);
+        Log.d("ListFragment", "Filtered list size: " + restaurantList.size());
+
+        // Notify adapter to refresh the display
         adapter.notifyDataSetChanged();
     }
 

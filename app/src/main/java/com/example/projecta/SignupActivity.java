@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +26,7 @@ public class SignupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
@@ -81,6 +83,7 @@ public class SignupActivity extends AppCompatActivity {
         user.put("username", username);
         user.put("phoneNumber", phoneNumber);
         user.put("email", email);
+        user.put("profileImageUrl", "");
 
         db.collection("users").document(userId)
                 .set(user)

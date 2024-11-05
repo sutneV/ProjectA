@@ -1,0 +1,558 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:id="@+id/scroll_view_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/apply_button"
+        android:fillViewport="true">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:orientation="vertical">
+
+            <!-- Header Section -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <!-- Clear All Text -->
+                <TextView
+                    android:id="@+id/clear_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Clear all"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <!-- Filter Title Text -->
+                <TextView
+                    android:id="@+id/filter_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Filter"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <!-- Close (X) Icon -->
+                <ImageView
+                    android:id="@+id/close_dialog"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_close"
+                    android:contentDescription="Close"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Divider Line Below Header -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D3D3D3" /> <!-- Light gray color for the divider -->
+
+            <!-- Hide Sold-Out Stores Section with CheckBox on the Same Line as Title -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <!-- Title for Hide Sold-Out Stores -->
+                <TextView
+                    android:id="@+id/title_hide_sold_out"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Hide sold-out stores"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/checkbox_hide_sold_out" />
+
+                <!-- CheckBox for Hide Sold-Out Stores -->
+                <CheckBox
+                    android:id="@+id/checkbox_hide_sold_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:contentDescription="Check to hide sold-out stores"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/title_hide_sold_out" />
+
+                <!-- Description Text -->
+                <TextView
+                    android:id="@+id/description_hide_sold_out"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Most stores only have a few Magic Bags every day. By activating this filter, we'll only show you stores with food left to save."
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textColor="#666666"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toBottomOf="@id/title_hide_sold_out"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="4dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Divider Line Below Hide Sold-Out Stores Section -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D3D3D3" /> <!-- Light gray color for the divider -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Title for Category Section -->
+                <TextView
+                    android:id="@+id/category_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Category"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/tw_cen_mt" />
+
+                <!-- Options for Category -->
+                <RadioGroup
+                    android:id="@+id/category_options"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Show All Option -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Show all"
+                            android:textSize="16sp"
+                            android:textColor="#000000"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:layout_marginStart="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radio_show_all"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#4CAF50" />
+                    </LinearLayout>
+
+                    <!-- Meals Option -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_japanese" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Japanese"
+                            android:textSize="16sp"
+                            android:textColor="#000000"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/tw_cen_mt" />
+
+                        <RadioButton
+                            android:id="@+id/radio_japanese"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#4CAF50" />
+                    </LinearLayout>
+
+                    <!-- Bread & Pastries Option -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_italian" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Italian"
+                            android:textSize="16sp"
+                            android:textColor="#000000"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/tw_cen_mt" />
+
+                        <RadioButton
+                            android:id="@+id/radio_italian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#4CAF50"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <!-- Groceries Option -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_chinese" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Chinese"
+                            android:textSize="16sp"
+                            android:textColor="#000000"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/tw_cen_mt" />
+
+                        <RadioButton
+                            android:id="@+id/radio_chinese"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#4CAF50"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_burger" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Burgers"
+                            android:textSize="16sp"
+                            android:textColor="#000000"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/tw_cen_mt" />
+
+                        <RadioButton
+                            android:id="@+id/radio_burgers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#4CAF50"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_thai" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Thai"
+                            android:textSize="16sp"
+                            android:textColor="#000000"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/tw_cen_mt" />/>
+
+                        <RadioButton
+                            android:id="@+id/radio_thai"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#4CAF50"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_vegan" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Vegan"
+                            android:textSize="16sp"
+                            android:textColor="#000000"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/tw_cen_mt" />/>
+
+                        <RadioButton
+                            android:id="@+id/radio_vegan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#4CAF50"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+                </RadioGroup>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D3D3D3" /> <!-- Light gray color for the divider -->
+
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Title for Allergen Types Section -->
+                <TextView
+                    android:id="@+id/allergen_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Allergen Types"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/tw_cen_mt" />
+
+                <!-- Subtitle for Allergen Types -->
+                <TextView
+                    android:id="@+id/allergen_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select the ingredients that trigger your allergic reaction."
+                    android:textSize="14sp"
+                    android:textColor="#666666"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Shellfish Option -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_shellfish" /> <!-- Icon for shellfish -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="Shellfish"
+                        android:textSize="16sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/tw_cen_mt" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_shellfish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!-- Fish Option -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_gluten" /> <!-- Icon for fish -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="Gluten"
+                        android:textSize="16sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/tw_cen_mt" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_fish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!-- Nut Option -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_nut" /> <!-- Icon for nut -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="Nut"
+                        android:textSize="16sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/tw_cen_mt" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_nut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!-- Tree Nut Option -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_treenut" /> <!-- Icon for tree nut -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="Tree Nut"
+                        android:textSize="16sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/tw_cen_mt" /> <!-- Bold style for Tree Nut -->
+
+                    <CheckBox
+                        android:id="@+id/checkbox_tree_nut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false" /> <!-- Pre-checked by default -->
+                </LinearLayout>
+
+                <!-- Bean Option -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_bean" /> <!-- Icon for bean -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="Bean"
+                        android:textSize="16sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/tw_cen_mt" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_bean"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+    <!-- Apply Button -->
+    <Button
+        android:id="@+id/apply_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#4CAF50"
+        android:text="APPLY"
+        android:fontFamily="@font/tw_cen_mt"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="true"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

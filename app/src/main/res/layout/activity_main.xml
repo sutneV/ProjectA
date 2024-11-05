@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:menu="@menu/bottom_navigation_menu"
-        app:labelVisibilityMode="labeled"
         app:itemTextAppearanceActive="@style/CustomBottomNavigationText"
         app:itemTextAppearanceInactive="@style/CustomBottomNavigationText"
         app:layout_constraintBottom_toBottomOf="parent"

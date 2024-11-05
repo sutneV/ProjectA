@@ -3,6 +3,7 @@ package com.example.projecta;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,7 +42,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap gMap;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private HashMap<String, Restaurant> restaurantMap = new HashMap<>();
-    private HashMap<String, Marker> markerMap = new HashMap<>();  // Map for storing restaurant ID to its marker
 
     @Nullable
     @Override
@@ -106,68 +109,97 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             OkHttpClient client = new OkHttpClient();
-            String apiKey = "Bearer Raj1vqpkZqqenzxYM7SaeNEITjBQHCz7gCSNgqQjVKzXGd9TrNjakyhQRZRDhCZmS5CN87UZQU5v0UXNoyeWOnOfrXE8jy0_17nTPsOllvXD455mAGdzTmyLWCgVZ3Yx"; // Replace with your Yelp API key
-            String requestUrl = String.format(Locale.getDefault(),
-                    "https://api.yelp.com/v3/businesses/search?latitude=%f&longitude=%f&radius=40000&categories=restaurants",
-                    latitude, longitude);
+            String apiKey = "Bearer YOUR_API_KEY"; // Replace with your Yelp API key
+            int offset = 0;
+            int limit = 50; // Yelp API's max limit per request
+            boolean moreResults = true;
 
-            Request request = new Request.Builder()
-                    .url(requestUrl)
-                    .addHeader("Authorization", apiKey)
-                    .build();
+            while (moreResults) {
+                String requestUrl = String.format(Locale.getDefault(),
+                        "https://api.yelp.com/v3/businesses/search?latitude=%f&longitude=%f&radius=40000&categories=restaurants&limit=%d&offset=%d",
+                        latitude, longitude, limit, offset);
 
-            try (Response response = client.newCall(request).execute()) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String responseData = response.body().string();
-                    JSONObject json = new JSONObject(responseData);
-                    JSONArray businesses = json.getJSONArray("businesses");
+                Request request = new Request.Builder()
+                        .url(requestUrl)
+                        .addHeader("Authorization", apiKey)
+                        .build();
 
-                    requireActivity().runOnUiThread(() -> {
-                        for (int i = 0; i < businesses.length(); i++) {
-                            try {
-                                JSONObject business = businesses.getJSONObject(i);
-                                String name = business.getString("name");
-                                String id = business.getString("id");
-                                JSONObject coordinates = business.getJSONObject("coordinates");
-                                double lat = coordinates.getDouble("latitude");
-                                double lng = coordinates.getDouble("longitude");
+                try (Response response = client.newCall(request).execute()) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseData = response.body().string();
+                        JSONObject json = new JSONObject(responseData);
+                        JSONArray businesses = json.getJSONArray("businesses");
 
-                                Restaurant restaurant = new Restaurant(
-                                        name,
-                                        business.getString("image_url"),
-                                        String.format("%.1f km", business.getDouble("distance") / 1000),
-                                        business.optString("price", "N/A"),
-                                        business.getJSONObject("location").getString("address1"),
-                                        "Today 19:00-21:00",
-                                        id,
-                                        lat,
-                                        lng,
-                                        business.optString("price", "Price range unknown"),
-                                        false
-                                );
-                                restaurantMap.put(id, restaurant);
-
-                                LatLng restaurantLocation = new LatLng(lat, lng);
-                                Marker marker = gMap.addMarker(new MarkerOptions()
-                                        .position(restaurantLocation)
-                                        .title(name)
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                                marker.setTag(restaurant);
-                                markerMap.put(id, marker);  // Store marker in markerMap
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        if (businesses.length() < limit) {
+                            moreResults = false; // No more results if the response is smaller than the limit
                         }
-                    });
-                } else {
-                    showToast("Failed to fetch restaurants from Yelp.");
+
+                        requireActivity().runOnUiThread(() -> {
+                            for (int i = 0; i < businesses.length(); i++) {
+                                try {
+                                    JSONObject business = businesses.getJSONObject(i);
+                                    String name = business.getString("name");
+                                    String id = business.getString("id"); // Yelp business ID
+                                    String price = business.optString("price", "N/A"); // Get price or default to N/A
+
+                                    // Extracting the list of category names
+                                    JSONArray categoryArray = business.getJSONArray("categories");
+                                    List<String> categories = new ArrayList<>();
+                                    for (int j = 0; j < categoryArray.length(); j++) {
+                                        JSONObject categoryObj = categoryArray.getJSONObject(j);
+                                        categories.add(categoryObj.getString("title"));
+                                    }
+
+                                    JSONObject coordinates = business.getJSONObject("coordinates");
+                                    double lat = coordinates.getDouble("latitude");
+                                    double lng = coordinates.getDouble("longitude");
+
+                                    // Create a Restaurant object and store it in the map
+                                    Restaurant restaurant = new Restaurant(
+                                            name,
+                                            business.getString("image_url"),
+                                            String.format("%.1f km", business.getDouble("distance") / 1000),
+                                            price,
+                                            business.getJSONObject("location").getString("address1"),
+                                            "Today 19:00-21:00", // Default timing as shown in your example
+                                            id,
+                                            lat,
+                                            lng,
+                                            price,
+                                            false,
+                                            categories
+                                    );
+
+                                    restaurantMap.put(id, restaurant);
+
+                                    // Add a marker with the restaurant data as tag
+                                    LatLng restaurantLocation = new LatLng(lat, lng);
+                                    Marker marker = gMap.addMarker(new MarkerOptions()
+                                            .position(restaurantLocation)
+                                            .title(name) // Title for info window display
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                                    marker.setTag(restaurant); // Tag marker with restaurant data
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                        // Increment the offset for the next batch of results
+                        offset += limit;
+                    } else {
+                        moreResults = false; // Stop if the response is unsuccessful
+                        showToast("Failed to fetch restaurants from Yelp.");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    showToast("Error fetching data from Yelp.");
+                    moreResults = false;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                showToast("Error fetching data from Yelp.");
             }
         });
     }
+
 
     public void filterMarkers(String query) {
         if (gMap == null) return;
@@ -197,6 +229,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         marker.setTag(restaurant);
     }
+
 
     private void showToast(String message) {
         requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show());

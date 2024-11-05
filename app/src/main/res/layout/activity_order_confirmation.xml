@@ -1,0 +1,461 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="24dp">
+
+    <!-- Scrollable content inside NestedScrollView -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="80dp"
+        android:layout_gravity="top"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Title Row with Back Arrow and Centered Title Text -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_gravity="center_horizontal">
+
+                <!-- Back Arrow Icon -->
+                <ImageView
+                    android:id="@+id/back_arrow"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_back"
+                    android:contentDescription="Back"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true" />
+
+                <!-- Title Text (Centered) -->
+                <TextView
+                    android:id="@+id/title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your order"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textColor="@android:color/black"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+
+            <!-- Divider Line -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginVertical="8dp" />
+
+            <!-- Order Status Section -->
+            <TextView
+                android:id="@+id/order_status_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Order Status"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textColor="@android:color/darker_gray"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:padding="4dp"/>
+
+            <!-- Status Text -->
+            <TextView
+                android:id="@+id/order_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending collection"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:padding="4dp"/>
+
+            <!-- Order ID Label -->
+            <TextView
+                android:id="@+id/order_id_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Order ID (click to expand):"
+                android:textSize="16sp"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:padding="4dp"/>
+
+            <!-- Order ID Text Placeholder -->
+            <TextView
+                android:id="@+id/order_id_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Order ID Placeholder"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@drawable/order_id_button_background"
+                android:textColor="#244B4C"
+                android:padding="4dp"
+                android:fontFamily="@font/tw_cen_mt"
+                android:layout_gravity="center_horizontal"
+                android:clickable="true"/>
+
+            <!-- Order Details Section (Initially Hidden) -->
+            <LinearLayout
+                android:id="@+id/order_details_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <!-- Item Information Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- Quantity Indicator -->
+                    <TextView
+                        android:id="@+id/item_quantity"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@drawable/order_quantity_background"
+                        android:text="1"
+                        android:textColor="@android:color/white"
+                        android:gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:textSize="12sp" />
+
+                    <!-- Item Name and Allergen Info -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- Item Name -->
+                        <TextView
+                            android:id="@+id/item_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Magic Bag"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textColor="@android:color/black" />
+
+                        <!-- Allergen Information -->
+                        <TextView
+                            android:id="@+id/allergen_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Allergens friendly"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textColor="@android:color/darker_gray" />
+                    </LinearLayout>
+
+                    <!-- Price Text -->
+                    <TextView
+                        android:id="@+id/item_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MYR 4.xx"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/tw_cen_mt"
+                        android:textColor="@android:color/black"
+                        android:gravity="end" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingVertical="8dp">
+
+                    <!-- Subtotal -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Subtotal"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textColor="@android:color/darker_gray" />
+
+                        <TextView
+                            android:id="@+id/subtotal_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MYR 4.66"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textColor="@android:color/darker_gray" />
+                    </LinearLayout>
+
+                    <!-- City Sales Tax -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="City sales tax"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textColor="@android:color/darker_gray" />
+
+                        <TextView
+                            android:id="@+id/city_tax_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MYR 0.18"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textColor="@android:color/darker_gray" />
+                    </LinearLayout>
+
+                    <!-- State Sales Tax -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="State sales tax"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textColor="@android:color/darker_gray" />
+
+                        <TextView
+                            android:id="@+id/state_tax_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MYR 0.15"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textColor="@android:color/darker_gray" />
+                    </LinearLayout>
+
+                    <!-- Total -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Total"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            android:id="@+id/total_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MYR 4.99"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/tw_cen_mt"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/black" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!-- Divider Line Above Address Section -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginVertical="8dp" />
+
+            <!-- Address Section with Restaurant Name on Top and Expandable Content -->
+            <LinearLayout
+                android:id="@+id/address_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <!-- Vertical Layout for Restaurant Name and Address -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Restaurant Name (Bold) -->
+                    <TextView
+                        android:id="@+id/restaurant_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bagelworks"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/tw_cen_mt"
+                        android:textColor="@android:color/black" />
+
+                    <!-- Address Text -->
+                    <TextView
+                        android:id="@+id/restaurant_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="368 W Burnside St, Portland, OR 97223, USA"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/tw_cen_mt"
+                        android:textColor="#244B4C"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- Arrow Icon for Expand/Collapse -->
+                <ImageView
+                    android:id="@+id/address_expand_arrow"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_expand_more"
+                    android:contentDescription="Expand Address Details" />
+            </LinearLayout>
+
+            <!-- Hidden Detailed Address Information (Initially Hidden) -->
+            <LinearLayout
+                android:id="@+id/address_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <!-- Optional Map Fragment (for displaying location) -->
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginVertical="8dp" />
+
+            <!-- Pickup Time Section -->
+            <TextView
+                android:id="@+id/pickup_time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick-up: Today June 24 between 2:00 PM and 2:45 PM"
+                android:textSize="16sp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/tw_cen_mt"
+                android:textColor="@android:color/black"
+                android:padding="16dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginVertical="8dp" />
+
+            <!-- Message and Cancel Reservation Section -->
+            <LinearLayout
+                android:id="@+id/reservation_message_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:gravity="center_horizontal">
+
+                <!-- Message Text -->
+                <TextView
+                    android:id="@+id/reservation_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This Store will ensure your food is packed and ready for collection, but we encourage you to bring your own bag."
+                    android:textSize="16sp"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textColor="@android:color/black"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Cancel Reservation Link Centered -->
+                <TextView
+                    android:id="@+id/cancel_reservation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel Reservation"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textColor="#B22222"
+                    android:gravity="center"
+                    android:layout_gravity="center" />
+
+                <!-- Message Text -->
+                <TextView
+                    android:id="@+id/cancel_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You can cancel your order up to 2 hours before the start of the pick-up time."
+                    android:textSize="16sp"
+                    android:fontFamily="@font/tw_cen_mt"
+                    android:textColor="@android:color/darker_gray"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Pinned Bottom Button -->
+    <Button
+        android:id="@+id/pickup_completed_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PICK-UP COMPLETED"
+        android:textSize="18sp"
+        android:textAllCaps="true"
+        android:fontFamily="@font/tw_cen_mt"
+        android:backgroundTint="#244B4C"
+        android:textColor="@android:color/white"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:paddingVertical="12dp" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

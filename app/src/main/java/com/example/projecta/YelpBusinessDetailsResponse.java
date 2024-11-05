@@ -1,6 +1,7 @@
 package com.example.projecta;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class YelpBusinessDetailsResponse {
 
@@ -8,6 +9,7 @@ public class YelpBusinessDetailsResponse {
     private String display_phone;   // Formatted phone number
     private Location location;      // Location object for address
     private List<Hour> hours;       // Hours object for business hours
+    private List<Category> categories; // List of categories for the business
 
     // Getters for phone and display_phone
     public String getPhone() {
@@ -26,6 +28,19 @@ public class YelpBusinessDetailsResponse {
     // Getter for hours
     public List<Hour> getHours() {
         return hours;
+    }
+
+    // Getter for categories
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    // New method to get category names
+    public List<String> getCategoryNames() {
+        if (categories != null) {
+            return categories.stream().map(Category::getTitle).collect(Collectors.toList());
+        }
+        return null;
     }
 
     // Inner class for location (address details)
@@ -92,6 +107,20 @@ public class YelpBusinessDetailsResponse {
             public boolean getIsClosed() {
                 return start == null || end == null;
             }
+        }
+    }
+
+    // Inner class for category details
+    public static class Category {
+        private String alias; // Alias for category
+        private String title; // Display title for category
+
+        public String getAlias() {
+            return alias;
+        }
+
+        public String getTitle() {
+            return title;
         }
     }
 }

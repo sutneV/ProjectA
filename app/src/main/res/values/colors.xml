@@ -6,4 +6,5 @@
     <color name="selectedTabColor">#6200EE</color>
     <color name="unselectedTabColor">#3700B3</color>
     <color name="cardBackgroundColor">#F5F5F5</color>
+    <color name="black">#000000</color>
 </resources>

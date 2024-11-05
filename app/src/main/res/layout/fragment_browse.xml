@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BrowseFragment">
+    tools:context=".BrowseFragment"
+    android:paddingTop="24dp">
 
     <LinearLayout
         android:id="@+id/top_bar"
@@ -109,8 +110,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
-            android:id="@+id/filter_icon"
+        <ImageButton
+            android:id="@+id/filter_button"
             android:layout_width="42dp"
             android:layout_height="match_parent"
             android:padding="8dp"

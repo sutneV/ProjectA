@@ -80,26 +80,6 @@
                 android:fontFamily="@font/tw_cen_mt"
                 android:textSize="14sp"
                 android:textColor="@android:color/darker_gray" />
-
-            <TextView
-                android:id="@+id/restaurant_price_range"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="$$"
-                android:fontFamily="@font/tw_cen_mt"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/holo_red_dark" />
-
-            <TextView
-                android:id="@+id/restaurant_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Today 14:00-14:45"
-                android:fontFamily="@font/tw_cen_mt"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:layout_marginBottom="6dp" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -3,6 +3,7 @@ package com.example.projecta;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -18,10 +20,10 @@ import java.util.List;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder> {
 
-    private Context context;
-    private List<Restaurant> favoriteRestaurants;
-    private FirebaseFirestore db;
-    private String userId;
+    private final Context context;
+    private final List<Restaurant> favoriteRestaurants;
+    private final FirebaseFirestore db;
+    private final String userId;
 
     public FavoritesAdapter(Context context, List<Restaurant> favoriteRestaurants) {
         this.context = context;
@@ -43,8 +45,6 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
 
         holder.restaurantName.setText(restaurant.getName());
         holder.restaurantDistance.setText(restaurant.getDistance());
-        holder.restaurantPriceRange.setText(restaurant.getPriceRange());
-        holder.restaurantTime.setText(restaurant.getTime());
         holder.restaurantPriceTag.setText(restaurant.getPriceTag());
 
         // Load the restaurant image
@@ -60,6 +60,18 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
         holder.favoriteIcon.setOnClickListener(v -> {
             animateFavoriteIcon(holder.favoriteIcon);
             removeRestaurantFromFavorites(restaurant, position);
+        });
+
+        // Handle item click to open RestaurantDetailsActivity
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, RestaurantDetailsActivity.class);
+            intent.putExtra("name", restaurant.getName());
+            intent.putExtra("businessId", restaurant.getBusinessId());
+            intent.putExtra("latitude", restaurant.getLatitude());
+            intent.putExtra("longitude", restaurant.getLongitude());
+            intent.putExtra("imageUrl", restaurant.getImageUrl());
+            intent.putExtra("time", restaurant.getTime());
+            context.startActivity(intent);
         });
     }
 
@@ -115,8 +127,6 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
             favoriteIcon = itemView.findViewById(R.id.favorite_icon);
             restaurantName = itemView.findViewById(R.id.restaurant_name);
             restaurantDistance = itemView.findViewById(R.id.restaurant_distance);
-            restaurantPriceRange = itemView.findViewById(R.id.restaurant_price_range);
-            restaurantTime = itemView.findViewById(R.id.restaurant_time);
             restaurantPriceTag = itemView.findViewById(R.id.restaurant_price);
         }
     }

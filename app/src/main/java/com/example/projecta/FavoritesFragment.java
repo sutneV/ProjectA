@@ -11,11 +11,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,6 +40,8 @@ public class FavoritesFragment extends Fragment {
         favoritesRecyclerView = view.findViewById(R.id.recyclerView_favorites);
         favoritesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         favoriteRestaurants = new ArrayList<>();
+
+        // Set up the adapter with the item click listener to open RestaurantDetailsActivity
         favoritesAdapter = new FavoritesAdapter(getContext(), favoriteRestaurants);
         favoritesRecyclerView.setAdapter(favoritesAdapter);
 
@@ -65,7 +70,6 @@ public class FavoritesFragment extends Fragment {
                     }
                 });
     }
-
 
     // Fetch restaurant details from Yelp API for each favorite business ID
     private void fetchFavoriteRestaurantDetailsFromYelp(List<String> favoriteBusinessIds) {
