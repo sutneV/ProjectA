@@ -35,4 +35,8 @@
         <item name="android:gravity">center_vertical</item> <!-- Set text size here -->
     </style>
 
+    <style name="Theme.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#FAF1E6</item>
+    </style>
+
 </resources>

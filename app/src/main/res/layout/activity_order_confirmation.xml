@@ -2,7 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="24dp">
+    android:paddingTop="24dp"
+    android:background="#FAF1E6">
 
     <!-- Scrollable content inside NestedScrollView -->
     <androidx.core.widget.NestedScrollView
@@ -151,7 +152,7 @@
                             android:id="@+id/item_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Magic Bag"
+                            android:text="The Portkey Package"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:fontFamily="@font/tw_cen_mt"
@@ -452,7 +453,7 @@
         android:textSize="18sp"
         android:textAllCaps="true"
         android:fontFamily="@font/tw_cen_mt"
-        android:backgroundTint="#244B4C"
+        android:backgroundTint="#5B3D2A"
         android:textColor="@android:color/white"
         android:layout_gravity="bottom"
         android:layout_margin="16dp"

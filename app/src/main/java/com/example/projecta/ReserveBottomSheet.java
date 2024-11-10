@@ -121,9 +121,6 @@ public class ReserveBottomSheet extends BottomSheetDialogFragment {
             intent.putExtra("allergy_friendly", allergyFriendly);
             intent.putExtra("total_price", totalPrice);
         }
-
-
-
         // Start OrderConfirmationActivity
         startActivity(intent);
     }

@@ -26,6 +26,16 @@ android {
             )
         }
     }
+
+    packaging {
+        resources {
+            excludes += listOf(
+                "META-INF/NOTICE.md",
+                "META-INF/LICENSE.md"
+            )
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -35,12 +45,10 @@ android {
 val nav_version = "2.8.3"
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation(libs.firebase.firestore)
     implementation("com.google.android.gms:play-services-maps:18.0.2")
@@ -68,6 +76,10 @@ dependencies {
     annotationProcessor ("androidx.room:room-compiler:2.5.0")
     implementation ( "androidx.transition:transition:1.4.1")
     implementation ("com.google.firebase:firebase-storage:20.0.1")
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation ("com.google.firebase:firebase-functions")
+    implementation ("com.sun.mail:android-mail:1.6.7")
+    implementation ("com.sun.mail:android-activation:1.6.7")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

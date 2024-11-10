@@ -143,7 +143,7 @@ public class BrowseFragment extends Fragment {
                     List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                     if (addresses != null && !addresses.isEmpty()) {
                         Address address = addresses.get(0);
-                        String locationText = address.getLocality() + ", " + address.getSubLocality() + " within 10 km";
+                        String locationText = address.getLocality() + ", " + address.getSubLocality() + " within 20 km";
                         locationTextView.setText(locationText);
                     } else {
                         locationTextView.setText("Location unavailable");

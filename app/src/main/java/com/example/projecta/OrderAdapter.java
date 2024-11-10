@@ -51,7 +51,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     }
 
     static class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView orderIdText, restaurantNameText, reservationTimeText, statusText, totalPriceText;
+        TextView orderIdText, restaurantNameText, reservationTimeText, statusText;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);

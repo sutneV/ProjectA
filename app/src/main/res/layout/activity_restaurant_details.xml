@@ -2,7 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FAF1E6">
 
     <!-- Scrollable content inside NestedScrollView -->
     <androidx.core.widget.NestedScrollView
@@ -37,12 +38,22 @@
                     android:layout_height="40dp"
                     android:background="@drawable/circle_badge_background"
                     android:gravity="center"
-                    android:text="5"
+                    android:text="5+"
                     android:fontFamily="@font/tw_cen_mt"
                     android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:layout_gravity="top|start"
                     android:layout_margin="8dp" />
+
+                <ImageView
+                    android:id="@+id/favorite_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/favorite_icon_background"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_favorite_outline"
+                    android:layout_gravity="bottom|end" />
 
                 <!-- Restaurant Name - Centered over the image -->
                 <TextView
@@ -78,7 +89,7 @@
                         android:id="@+id/restaurant_product_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Magic Bag"
+                        android:text="The Portkey Package"
                         android:fontFamily="@font/tw_cen_mt"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -353,7 +364,7 @@
                         android:id="@+id/bag_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="It's a surprise! When you buy a bag, it will be filled with delicious food that the store has left at the end of the day."
+                        android:text="It's a surprise! When you buy a package, it will be filled with delicious food that the store has left at the end of the day."
                         android:fontFamily="@font/tw_cen_mt"
                         android:textSize="16sp"
                         android:textColor="@android:color/black"
@@ -488,7 +499,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="People love this Surprise Bag"
+                        android:text="People love this Package!"
                         android:textSize="16sp"
                         android:textColor="@android:color/black"
                         android:fontFamily="@font/tw_cen_mt"
@@ -613,7 +624,7 @@
         android:fontFamily="@font/tw_cen_mt"
         android:textAllCaps="false"
         android:textSize="18sp"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="#5B3D2A"
         android:textColor="@android:color/white"
         android:layout_gravity="bottom"
         android:layout_marginBottom="16dp"

@@ -1,5 +1,7 @@
 package com.example.projecta;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -16,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -26,6 +30,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,6 +62,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
     private GoogleMap googleMap;
     private LatLng restaurantLatLng;
     private String restaurantName;
+    private Map<String, Boolean> favoriteMap = new HashMap<>(); // Added favoriteMap
+    private List<String> restaurantCategories = new ArrayList<>();
 
     private static final Map<String, Integer> ALLERGENS_MAP = new HashMap<String, Integer>() {{
         put("Tree nut", R.drawable.ic_treenut); // Replace with actual drawable icons
@@ -63,13 +73,10 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         put("Shellfish", R.drawable.ic_shellfish);
     }};
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        getWindow().setStatusBarColor(Color.TRANSPARENT); // Make the status bar transparent
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_restaurant_details);
 
         // Setup shared element transitions
@@ -94,6 +101,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         phoneTextView = findViewById(R.id.restaurant_phone);
         LinearLayout categoryContainer = findViewById(R.id.category_container); // Category container
         TextView originalPriceTextView = findViewById(R.id.original_price);
+        ImageView favoriteIcon = findViewById(R.id.favorite_icon); // Favorite icon added
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         originalPriceTextView.setPaintFlags(originalPriceTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         nameTextView.setText(restaurantName);
@@ -120,6 +129,19 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
             bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
         });
 
+        // Initialize favorite logic
+        final boolean[] isFavorite = {favoriteMap.containsKey(businessId) && favoriteMap.get(businessId)};
+        checkFavoriteStatus(userId, businessId, favoriteIcon, isFavorite);
+        updateFavoriteIcon(favoriteIcon, isFavorite[0]);
+
+        favoriteIcon.setOnClickListener(v -> {
+            boolean newFavoriteStatus = !isFavorite[0]; // Toggle favorite status
+            favoriteMap.put(businessId, newFavoriteStatus);
+            animateFavoriteIcon(favoriteIcon, newFavoriteStatus);
+            updateFavoriteStatusInFirestore(businessId, newFavoriteStatus);
+            isFavorite[0] = newFavoriteStatus; // Update the wrapper value
+        });
+
         // More Information Section
         moreInfoDetails = findViewById(R.id.more_info_details);
         LinearLayout moreInfoContainer = findViewById(R.id.more_info_container);
@@ -133,7 +155,6 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         allergenDetails = findViewById(R.id.allergen_details);
         LinearLayout allergenContainer = findViewById(R.id.allergen_container);
         allergenExpandArrow = findViewById(R.id.allergen_info_expand_arrow);
-
 
         moreInfoDetails.setVisibility(View.GONE);
         addressDetails.setVisibility(View.GONE);
@@ -155,6 +176,89 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
             return;
         } else {
             fetchBusinessDetails(businessId, categoryContainer); // Pass the container to the fetch method
+        }
+    }
+
+    private void checkFavoriteStatus(String userId, String businessId, ImageView favoriteIcon, boolean[] isFavorite) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .document(userId)
+                .collection("favorites")
+                .document(businessId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Restaurant is a favorite
+                        updateFavoriteIcon(favoriteIcon, true);
+                        isFavorite[0] = true;
+                    } else {
+                        // Restaurant is not a favorite
+                        updateFavoriteIcon(favoriteIcon, false);
+                        isFavorite[0] = false;
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error checking favorite status", e);
+                    updateFavoriteIcon(favoriteIcon, false); // Default to not favorite
+                    isFavorite[0] = false;
+                });
+    }
+
+    // Helper methods for favorite logic
+    private void animateFavoriteIcon(ImageView favoriteIcon, boolean isFavorite) {
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator scaleXUp = ObjectAnimator.ofFloat(favoriteIcon, "scaleX", 1f, 1.2f);
+        ObjectAnimator scaleYUp = ObjectAnimator.ofFloat(favoriteIcon, "scaleY", 1f, 1.2f);
+        ObjectAnimator scaleXDown = ObjectAnimator.ofFloat(favoriteIcon, "scaleX", 1.2f, 1f);
+        ObjectAnimator scaleYDown = ObjectAnimator.ofFloat(favoriteIcon, "scaleY", 1.2f, 1f);
+        animatorSet.play(scaleXUp).with(scaleYUp);
+        animatorSet.play(scaleXDown).with(scaleYDown).after(scaleXUp);
+        animatorSet.setDuration(300);
+        animatorSet.start();
+        updateFavoriteIcon(favoriteIcon, isFavorite);
+    }
+
+    private void updateFavoriteIcon(ImageView favoriteIcon, boolean isFavorite) {
+        favoriteIcon.setImageResource(isFavorite ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_outline);
+    }
+
+    private void updateFavoriteStatusInFirestore(String businessId, boolean isFavorite) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        if (isFavorite) {
+            // Add all required fields to the favorite
+            Map<String, Object> restaurantData = new HashMap<>();
+            restaurantData.put("businessId", businessId);
+            restaurantData.put("name", restaurantName);
+            restaurantData.put("latitude", restaurantLatLng.latitude);
+            restaurantData.put("longitude", restaurantLatLng.longitude);
+            restaurantData.put("address", addressTextView.getText().toString());
+            restaurantData.put("categories", restaurantCategories); // Use the extracted categories
+            restaurantData.put("imageUrl", getIntent().getStringExtra("imageUrl"));
+            restaurantData.put("priceRange", getIntent().getStringExtra("priceRange"));
+            restaurantData.put("priceTag", getIntent().getStringExtra("priceTag"));
+            restaurantData.put("time", getIntent().getStringExtra("time"));
+            restaurantData.put("distance", getIntent().getStringExtra("distance"));
+            restaurantData.put("isFavorite", true);
+
+            // Save to Firestore
+            db.collection("users")
+                    .document(userId)
+                    .collection("favorites")
+                    .document(businessId)
+                    .set(restaurantData)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Added to favorites"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Failed to add to favorites", e));
+        } else {
+            // Remove the favorite from Firestore
+            db.collection("users")
+                    .document(userId)
+                    .collection("favorites")
+                    .document(businessId)
+                    .delete()
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Removed from favorites"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Failed to remove from favorites", e));
         }
     }
 
@@ -270,11 +374,16 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
                 if (response.isSuccessful() && response.body() != null) {
                     YelpBusinessDetailsResponse businessDetails = response.body();
 
-                    // Display categories as individual TextViews
+                    // Extract categories and store them
+                    restaurantCategories.clear();
+                    if (businessDetails.getCategoryNames() != null) {
+                        restaurantCategories.addAll(businessDetails.getCategoryNames());
+                    }
+
+                    // Display categories in the UI
                     categoryContainer.removeAllViews(); // Clear any existing category views
-                    List<String> categories = businessDetails.getCategoryNames();
-                    if (categories != null && !categories.isEmpty()) {
-                        for (String category : categories) {
+                    if (!restaurantCategories.isEmpty()) {
+                        for (String category : restaurantCategories) {
                             TextView categoryTextView = new TextView(RestaurantDetailsActivity.this);
                             categoryTextView.setText(category);
                             categoryTextView.setPadding(16, 8, 16, 8);
@@ -283,7 +392,6 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
                             categoryTextView.setTextSize(14);
 
                             categoryTextView.setTypeface(ResourcesCompat.getFont(RestaurantDetailsActivity.this, R.font.tw_cen_mt));
-
 
                             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.WRAP_CONTENT,

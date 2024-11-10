@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -32,12 +33,15 @@
         </activity>
 
         <activity android:name=".LoginActivity" />
+        <activity android:name=".EmailOtpLoginActivity"/>
         <activity android:name=".SignupActivity" />
         <activity android:name=".MainActivity"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".FilterActivity" />
         <activity android:name=".RestaurantDetailsActivity" />
         <activity android:name=".OrderConfirmationActivity" />
+        <activity android:name=".ReviewsActivity" />
+        <activity android:name=".EditProfileActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

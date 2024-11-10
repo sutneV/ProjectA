@@ -111,7 +111,7 @@ public class DiscoverFragment extends Fragment {
                     List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                     if (addresses != null && !addresses.isEmpty()) {
                         Address address = addresses.get(0);
-                        String locationText = address.getLocality() + ", " + address.getSubLocality() + " within 10 km";
+                        String locationText = address.getLocality() + ", " + address.getSubLocality() + " within 20 km";
                         locationTextView.setText(locationText);
                     } else {
                         locationTextView.setText("Location unavailable");
@@ -156,7 +156,6 @@ public class DiscoverFragment extends Fragment {
         long lastFetchTime = sharedPreferences.getLong(PREF_LAST_POPULAR_FETCH, 0);
         if (System.currentTimeMillis() - lastFetchTime < CACHE_VALIDITY_DURATION && popularRestaurants != null && !popularRestaurants.isEmpty()) {
             section1RecyclerView.setAdapter(new RestaurantAdapter(getContext(), popularRestaurants, restaurantPrices));
-            Log.d("CACHE", "Using cached popular restaurants");
             return;
         }
 
@@ -222,7 +221,6 @@ public class DiscoverFragment extends Fragment {
         long lastFetchTime = sharedPreferences.getLong(PREF_LAST_NEARBY_FETCH, 0);
         if (System.currentTimeMillis() - lastFetchTime < CACHE_VALIDITY_DURATION && nearbyRestaurants != null && !nearbyRestaurants.isEmpty()) {
             section2RecyclerView.setAdapter(new HorizontalRestaurantAdapter(getContext(), nearbyRestaurants, restaurantPrices, favoriteMap));
-            Log.d("CACHE", "Using cached nearby restaurants");
             return;
         }
 
@@ -281,7 +279,6 @@ public class DiscoverFragment extends Fragment {
         long lastFetchTime = sharedPreferences.getLong(PREF_LAST_DINNER_FETCH, 0);
         if (System.currentTimeMillis() - lastFetchTime < CACHE_VALIDITY_DURATION && dinnerRestaurants != null && !dinnerRestaurants.isEmpty()) {
             section3RecyclerView.setAdapter(new HorizontalRestaurantAdapter(getContext(), dinnerRestaurants, restaurantPrices, favoriteMap));
-            Log.d("CACHE", "Using cached dinner restaurants");
             return;
         }
 
@@ -366,3 +363,6 @@ public class DiscoverFragment extends Fragment {
         }
     }
 }
+
+/*
+Raj1vqpkZqqenzxYM7SaeNEITjBQHCz7gCSNgqQjVKzXGd9TrNjakyhQRZRDhCZmS5CN87UZQU5v0UXNoyeWOnOfrXE8jy0_17nTPsOllvXD455mAGdzTmyLWCgVZ3Yx*/

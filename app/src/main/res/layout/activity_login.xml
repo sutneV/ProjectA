@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp"
-    android:background="#FFFFFF">
+    android:background="#FAF1E6">
 
     <!-- Logo Image at the Top -->
     <com.makeramen.roundedimageview.RoundedImageView
@@ -49,21 +49,38 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/input_field_background"
-        android:hint="Enter Your Username / Email"
+        android:hint="Enter Your Email"
         android:fontFamily="@font/tw_cen_mt"
         android:padding="16dp" />
 
     <!-- Password Input -->
-    <EditText
-        android:id="@+id/etPassword"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_marginTop="8dp"
-        android:background="@drawable/input_field_background"
-        android:hint="Enter Your Password"
-        android:inputType="textPassword"
-        android:fontFamily="@font/tw_cen_mt"
-        android:padding="16dp" />
+        android:background="@drawable/input_field_background">
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Enter Your Password"
+            android:inputType="textPassword"
+            android:fontFamily="@font/tw_cen_mt"
+            android:padding="16dp"
+            android:background="@android:color/transparent" />
+
+        <ImageView
+            android:id="@+id/ivShowHidePassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_visibility_off"
+            android:contentDescription="Show/Hide Password"
+            android:padding="8dp" />
+    </LinearLayout>
 
     <!-- Forgot Password Link -->
     <TextView
@@ -76,7 +93,7 @@
         android:text="Forgot Password?"
         android:textSize="16sp"
         android:fontFamily="@font/tw_cen_mt"
-        android:textColor="#0066cc" />
+        android:textColor="#5B3D2A" />
 
     <!-- Login Button -->
     <Button
@@ -85,7 +102,7 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:textAllCaps="false"
-        android:backgroundTint="#0066cc"
+        android:backgroundTint="#5B3D2A"
         android:textColor="#FFFFFF"
         android:fontFamily="@font/tw_cen_mt"
         android:layout_marginTop="16dp"
@@ -113,7 +130,7 @@
             android:layout_height="wrap_content"
             android:text=" Sign Up"
             android:textSize="16sp"
-            android:textColor="#0066cc"
+            android:textColor="#5B3D2A"
             android:fontFamily="@font/tw_cen_mt"
             android:clickable="true" />
     </LinearLayout>
@@ -160,5 +177,18 @@
         android:fontFamily="@font/tw_cen_mt"
         android:textSize="16sp"
         android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btnLoginWithOtp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login with OTP"
+        android:textAllCaps="false"
+        android:backgroundTint="#5B3D2A"
+        android:textColor="#FFFFFF"
+        android:fontFamily="@font/tw_cen_mt"
+        android:textSize="16sp"
+        android:padding="12dp"/>
+
 
 </LinearLayout>

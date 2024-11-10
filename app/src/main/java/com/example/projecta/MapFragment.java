@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -25,7 +24,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +107,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             OkHttpClient client = new OkHttpClient();
-            String apiKey = "Bearer YOUR_API_KEY"; // Replace with your Yelp API key
+            String apiKey = "Bearer 8nYrKNweT6ZiF8CLMnWfoINveoarRjAZkLYQjEUF519En4I2gSJgZVir26RVjdtZSUpwRYV2VgsauJqx6zKfaWTYsxrkePzHUUvy8iSflo8P5wkdIDoiEtGqdvswZ3Yx"; // Replace with your Yelp API key
             int offset = 0;
             int limit = 50; // Yelp API's max limit per request
             boolean moreResults = true;
@@ -189,11 +187,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         offset += limit;
                     } else {
                         moreResults = false; // Stop if the response is unsuccessful
-                        showToast("Failed to fetch restaurants from Yelp.");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    showToast("Error fetching data from Yelp.");
                     moreResults = false;
                 }
             }
@@ -230,11 +226,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         marker.setTag(restaurant);
     }
 
-
-    private void showToast(String message) {
-        requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show());
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -269,8 +260,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             getDeviceLocationAndShowNearbyRestaurants();
-        } else {
-            showToast("Location permission is required to show nearby restaurants.");
         }
     }
 }

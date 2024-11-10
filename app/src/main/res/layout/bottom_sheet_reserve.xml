@@ -1,7 +1,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded_bottom_sheet_background">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -81,11 +82,10 @@
                 <!-- Decrease Button -->
                 <ImageButton
                     android:id="@+id/btn_decrease_quantity"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:background="@drawable/round_button_background"
                     android:src="@drawable/ic_decrease"
-                    android:tint="@android:color/black"
                     android:scaleType="centerInside" />
 
                 <!-- Quantity Display -->
@@ -105,11 +105,10 @@
                 <!-- Increase Button -->
                 <ImageButton
                     android:id="@+id/btn_increase_quantity"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:background="@drawable/round_button_background"
                     android:src="@drawable/ic_increase"
-                    android:tint="@android:color/black"
                     android:scaleType="centerInside" />
             </LinearLayout>
 
@@ -137,7 +136,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Do you require all magic boxes to be allergen-friendly?"
+                    android:text="Do you require all Package to be allergen-friendly?"
                     android:fontFamily="@font/tw_cen_mt"
                     android:textSize="14sp"
                     android:textColor="@android:color/black"
@@ -184,7 +183,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="By reserving this meal, you agree to Too Good To Go's terms and conditions."
+                android:text="By reserving this meal, you agree to UrbanEats's terms and conditions."
                 android:textSize="12sp"
                 android:fontFamily="@font/tw_cen_mt"
                 android:textColor="@android:color/darker_gray"
@@ -199,7 +198,7 @@
                 android:text="RESERVE"
                 android:fontFamily="@font/tw_cen_mt"
                 android:textSize="18sp"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="#5B3D2A"
                 android:textColor="@android:color/white"
                 android:layout_gravity="bottom"
                 android:layout_marginTop="16dp"

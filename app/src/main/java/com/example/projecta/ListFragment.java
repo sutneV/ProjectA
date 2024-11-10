@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -24,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -80,8 +78,6 @@ public class ListFragment extends Fragment {
                             favoriteMap.put(document.getId(), true);
                         }
                         getCurrentLocation();
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to load favorites", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -89,15 +85,12 @@ public class ListFragment extends Fragment {
     // Request current location and fetch restaurants
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT).show();
             return;
         }
 
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
             if (location != null) {
                 fetchRestaurantsFromYelp(location.getLatitude(), location.getLongitude());
-            } else {
-                Toast.makeText(requireContext(), "Failed to get location", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -109,7 +102,7 @@ public class ListFragment extends Fragment {
 
     private void fetchPaginatedRestaurantsFromYelp(double latitude, double longitude, int offset) {
         YelpApiService yelpApiService = getYelpApiService();
-        String apiKey = "Bearer Raj1vqpkZqqenzxYM7SaeNEITjBQHCz7gCSNgqQjVKzXGd9TrNjakyhQRZRDhCZmS5CN87UZQU5v0UXNoyeWOnOfrXE8jy0_17nTPsOllvXD455mAGdzTmyLWCgVZ3Yx"; // Replace with your actual Yelp API key
+        String apiKey = "Bearer s5Z4rypr6TE4p-kokQWjoeVsl8WFmvNG1KVKVxAvo6QwJYhTGW5YvurrghO5M25Svs6VUsKyhBXIxXx15bsopgaZ6GorJf6vVdFD82VpE-FJ84xHmrrNv4CPV_owZ3Yx"; // Replace with your actual Yelp API key
 
         yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 10000, 50, offset)
                 .enqueue(new Callback<YelpResponse>() {
@@ -149,14 +142,12 @@ public class ListFragment extends Fragment {
                             if (businesses.size() == 50) {
                                 fetchPaginatedRestaurantsFromYelp(latitude, longitude, offset + 50);
                             }
-                        } else {
-                            Toast.makeText(requireContext(), "Failed to fetch restaurants", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<YelpResponse> call, Throwable t) {
-                        Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("ListFragment", "Error: " + t.getMessage());
                     }
                 });
     }
@@ -174,7 +165,7 @@ public class ListFragment extends Fragment {
         if (restaurantPrices.containsKey(businessId)) {
             return restaurantPrices.get(businessId);
         } else {
-            String price = "US$ " + (2 + new Random().nextInt(8)) + ".99";
+            String price = "MYR " + "14.99";
             restaurantPrices.put(businessId, price);
             return price;
         }
@@ -229,8 +220,6 @@ public class ListFragment extends Fragment {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadFavoritesFromFirestore();
-            } else {
-                Toast.makeText(requireContext(), "Location permission is needed to show your location", Toast.LENGTH_SHORT).show();
             }
         }
     }

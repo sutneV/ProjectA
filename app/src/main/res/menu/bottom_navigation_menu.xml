@@ -3,17 +3,21 @@
     <item
         android:id="@+id/navigation_discover"
         android:icon="@drawable/ic_discover"
-        android:title="Discover" />
+        android:title="Discover"
+        android:background="@drawable/tab_background_selector" />
     <item
         android:id="@+id/navigation_browse"
         android:icon="@drawable/ic_browse"
-        android:title="Browse" />
+        android:title="Browse"
+        android:background="@drawable/tab_background_selector" />
     <item
         android:id="@+id/navigation_favorites"
         android:icon="@drawable/ic_favorite_outline"
-        android:title="Favorites" />
+        android:title="Favorites"
+        android:background="@drawable/tab_background_selector" />
     <item
         android:id="@+id/navigation_more"
         android:icon="@drawable/ic_more"
-        android:title="More" />
+        android:title="More"
+        android:background="@drawable/tab_background_selector" />
 </menu>

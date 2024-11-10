@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#FAF1E6">
 
     <!-- FrameLayout to load fragments dynamically -->
     <FrameLayout
@@ -24,8 +25,10 @@
         app:menu="@menu/bottom_navigation_menu"
         app:itemTextAppearanceActive="@style/CustomBottomNavigationText"
         app:itemTextAppearanceInactive="@style/CustomBottomNavigationText"
+        app:itemActiveIndicatorStyle="@style/Theme.BottomNavigationView.ActiveIndicator"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="#F1D9BB"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

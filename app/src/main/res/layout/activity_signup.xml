@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp"
-    android:background="#FFFFFF">
+    android:background="#FAF1E6">
 
     <!-- Title -->
     <TextView
@@ -39,7 +39,7 @@
         android:padding="16dp"
         android:background="@drawable/input_field_background"
         android:fontFamily="@font/tw_cen_mt"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp" />
 
     <!-- Password Input -->
     <EditText
@@ -51,7 +51,28 @@
         android:inputType="textPassword"
         android:background="@drawable/input_field_background"
         android:fontFamily="@font/tw_cen_mt"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp" />
+
+    <!-- Password Strength Bar -->
+    <ProgressBar
+        android:id="@+id/passwordStrengthBar"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:max="100"
+        android:progress="0"
+        android:layout_marginTop="8dp"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/password_strength_bar" />
+
+    <TextView
+        android:id="@+id/passwordStrengthText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Password strength: Weak"
+        android:fontFamily="@font/tw_cen_mt"
+        android:textSize="14sp"
+        android:textColor="#FF0000" />
 
     <!-- Email Input -->
     <EditText
@@ -62,7 +83,7 @@
         android:padding="16dp"
         android:background="@drawable/input_field_background"
         android:fontFamily="@font/tw_cen_mt"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp" />
 
     <!-- Phone Number Input -->
     <EditText
@@ -73,7 +94,7 @@
         android:padding="16dp"
         android:background="@drawable/input_field_background"
         android:fontFamily="@font/tw_cen_mt"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp" />
 
     <!-- Signup Button -->
     <Button
@@ -82,12 +103,12 @@
         android:layout_height="wrap_content"
         android:text="Sign Up"
         android:textAllCaps="false"
-        android:backgroundTint="#0066cc"
+        android:backgroundTint="#5B3D2A"
         android:textColor="#FFFFFF"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/tw_cen_mt"
         android:textSize="16sp"
-        android:padding="12dp"/>
+        android:padding="12dp" />
 
     <!-- Login Link -->
     <LinearLayout
@@ -110,7 +131,7 @@
             android:layout_height="wrap_content"
             android:text=" Login"
             android:textSize="16sp"
-            android:textColor="#0066cc"
+            android:textColor="#5B3D2A"
             android:fontFamily="@font/tw_cen_mt"
             android:clickable="true" />
     </LinearLayout>
@@ -136,7 +157,7 @@
             android:gravity="center"
             android:fontFamily="@font/tw_cen_mt"
             android:paddingStart="8dp"
-            android:paddingEnd="8dp"/>
+            android:paddingEnd="8dp" />
 
         <View
             android:layout_width="0dp"
@@ -146,17 +167,18 @@
     </LinearLayout>
 
     <!-- Google Button -->
-
     <Button
         android:id="@+id/btnGoogleSignup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sign Up with Google"
         android:drawableLeft="@drawable/ic_google"
+        android:drawablePadding="8dp"
         android:backgroundTint="#000000"
         android:fontFamily="@font/tw_cen_mt"
         android:layout_marginTop="8dp"
         android:textSize="16sp"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:padding="12dp" />
 
 </LinearLayout>

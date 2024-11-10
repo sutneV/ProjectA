@@ -1,0 +1,95 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="#FAF1E6">
+
+    <!-- Profile Picture -->
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/ic_user_avatar_placeholder"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Profile Picture"
+        app:riv_corner_radius="75dp"
+        app:riv_oval="true" />
+
+    <Button
+        android:id="@+id/btnChangePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#5B3D2A"
+        android:text="Change Photo"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="false"
+        android:fontFamily="@font/tw_cen_mt"
+        android:padding="8dp" />
+
+    <!-- Username Input -->
+    <EditText
+        android:id="@+id/etEditUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/input_field_background"
+        android:hint="Enter Your Username"
+        android:fontFamily="@font/tw_cen_mt"
+        android:padding="16dp" />
+
+    <!-- Email Input -->
+    <EditText
+        android:id="@+id/etEditEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/input_field_background"
+        android:hint="Enter Your Email"
+        android:fontFamily="@font/tw_cen_mt"
+        android:inputType="textEmailAddress"
+        android:padding="16dp" />
+
+    <EditText
+        android:id="@+id/etEditPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Your Phone Number"
+        android:inputType="phone"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/input_field_background"
+        android:fontFamily="@font/tw_cen_mt"
+        android:padding="16dp" />
+
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/btnSaveProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#5B3D2A"
+        android:text="Save Changes"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="false"
+        android:fontFamily="@font/tw_cen_mt"
+        android:padding="12dp" />
+
+    <!-- Cancel Button -->
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#878787"
+        android:text="Cancel"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="false"
+        android:fontFamily="@font/tw_cen_mt"
+        android:padding="12dp" />
+
+</LinearLayout>

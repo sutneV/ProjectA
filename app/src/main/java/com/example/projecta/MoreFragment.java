@@ -18,6 +18,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,12 +26,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.google.android.libraries.places.api.model.Review;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -46,7 +50,7 @@ public class MoreFragment extends Fragment {
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView userGreeting;
-    private ImageView profileIcon;
+    private ImageView profileIcon,editIcon;
     private ImageButton uploadButton;
 
     private FirebaseAuth mAuth;
@@ -58,7 +62,7 @@ public class MoreFragment extends Fragment {
     private ActivityResultLauncher<Intent> photoPickerLauncher;
 
     private RecyclerView recyclerViewOrders;
-    private TextView noOrdersText;
+    private TextView noOrdersText, reviewText;
     private OrderAdapter orderAdapter;
     private List<Order> orderList = new ArrayList<>();
 
@@ -74,6 +78,7 @@ public class MoreFragment extends Fragment {
         storageRef = storage.getReference("profile_pictures");
 
         // Initialize views
+        reviewText = view.findViewById(R.id.review_text);
         appBarLayout = view.findViewById(R.id.appBarLayout);
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
         userGreeting = view.findViewById(R.id.user_greeting);
@@ -81,10 +86,24 @@ public class MoreFragment extends Fragment {
         uploadButton = view.findViewById(R.id.upload_button);
         recyclerViewOrders = view.findViewById(R.id.recycler_view_orders);
         noOrdersText = view.findViewById(R.id.no_orders_text);
-
         recyclerViewOrders.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         orderAdapter = new OrderAdapter(getContext(), orderList);
         recyclerViewOrders.setAdapter(orderAdapter);
+        editIcon = view.findViewById(R.id.edit_icon);
+
+        fetchReviewsCount(db, mAuth.getCurrentUser().getUid(), reviewText);
+
+        editIcon.setOnClickListener(v -> {
+            // Navigate to an Edit Profile Activity
+            Intent intent = new Intent(getContext(), EditProfileActivity.class);
+            startActivity(intent);
+        });
+
+        CardView reviewCard = view.findViewById(R.id.review_card);
+        reviewCard.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ReviewsActivity.class);
+            startActivity(intent);
+        });
 
         // Debugging check
         if (uploadButton != null) {
@@ -127,27 +146,56 @@ public class MoreFragment extends Fragment {
         return view;
     }
 
+    private void fetchReviewsCount(FirebaseFirestore db, String userId, TextView reviewText) {
+        db.collection("users")
+                .document(userId)
+                .collection("reviews")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        int reviewCount = task.getResult().size();
+                        // Update the TextView dynamically
+                        String updatedText = reviewCount + " reviews • 0 likes";
+                        reviewText.setText(updatedText);
+                    } else {
+                        // Handle errors here
+                        Log.e("Firestore", "Error fetching reviews", task.getException());
+                    }
+                });
+    }
+
+
     private void loadOrdersFromFirestore() {
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            String userId = user.getUid();
-            db.collection("users").document(userId).collection("orders")
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
+        if (user == null) {
+            Toast.makeText(getContext(), "User not logged in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = user.getUid();
+        db.collection("users")
+                .document(userId)
+                .collection("orders")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null) {
                             orderList.clear();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            for (DocumentSnapshot document : querySnapshot) {
                                 Order order = document.toObject(Order.class);
-                                Log.d("OrderData", "Order loaded: " + order.getOrderId() + ", " + order.getStatus() + ", " + order.getRestaurantName());
-                                orderList.add(order);
+                                if (order != null) {
+                                    order.setOrderId(document.getId()); // Set the Firestore document ID
+                                    orderList.add(order);
+                                }
                             }
                             updateUI();
-                        } else {
-                            Log.e(TAG, "Error loading orders", task.getException());
-                            Toast.makeText(getContext(), "Failed to load orders", Toast.LENGTH_SHORT).show();
                         }
-                    });
-        }
+                    } else {
+                        Log.e(TAG, "Error fetching orders: ", task.getException());
+                        Toast.makeText(getContext(), "Failed to load orders.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 

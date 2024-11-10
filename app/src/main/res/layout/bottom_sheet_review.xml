@@ -1,0 +1,218 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/rounded_bottom_sheet_background">
+
+    <!-- Header Section -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
+
+        <!-- Question Text -->
+        <TextView
+            android:id="@+id/question_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Does the vendor take care of the allergens as they list?"
+            android:fontFamily="@font/tw_cen_mt"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="50dp" />
+
+        <!-- Close button -->
+        <ImageView
+            android:id="@+id/close_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Star Rating Section -->
+    <LinearLayout
+        android:id="@+id/star_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <!-- Star Icons -->
+        <ImageView
+            android:id="@+id/star_1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_star_empty"
+            android:contentDescription="Star 1"
+            android:padding="4dp"
+            android:layout_marginEnd="16dp" />
+
+        <ImageView
+            android:id="@+id/star_2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_star_empty"
+            android:contentDescription="Star 2"
+            android:padding="4dp"
+            android:layout_marginEnd="16dp" />
+
+        <ImageView
+            android:id="@+id/star_3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_star_empty"
+            android:contentDescription="Star 3"
+            android:padding="4dp"
+            android:layout_marginEnd="16dp" />
+
+        <ImageView
+            android:id="@+id/star_4"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_star_empty"
+            android:contentDescription="Star 4"
+            android:padding="4dp"
+            android:layout_marginEnd="16dp" />
+
+        <ImageView
+            android:id="@+id/star_5"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_star_empty"
+            android:contentDescription="Star 5"
+            android:padding="4dp" />
+    </LinearLayout>
+
+    <!-- Buttons Section -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
+        android:alignmentMode="alignMargins"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:clickable="true">
+
+        <!-- Button 1 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_great_service"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:backgroundTint="@null"
+            android:background="@drawable/review_button_background_selector"
+            android:fontFamily="@font/tw_cen_mt"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="Great service"
+            android:textColor="@color/button_text_color"
+            android:textStyle="bold"
+            android:clickable="true"/>
+
+        <!-- Button 2 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_quick_pickup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:backgroundTint="@null"
+            android:background="@drawable/review_button_background_selector"
+            android:fontFamily="@font/tw_cen_mt"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="Quick pick-up"
+            android:textColor="@color/button_text_color"
+            android:textStyle="bold"
+            android:clickable="true"/>
+
+
+        <!-- Button 3 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_allergy_friendly"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:backgroundTint="@null"
+            android:background="@drawable/review_button_background_selector"
+            android:fontFamily="@font/tw_cen_mt"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="Allergy friendly"
+            android:textColor="@color/button_text_color"
+            android:textStyle="bold"
+            android:clickable="true"/>
+
+        <!-- Button 4 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_great_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:backgroundTint="@null"
+            android:background="@drawable/review_button_background_selector"
+            android:fontFamily="@font/tw_cen_mt"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="Great value"
+            android:textColor="@color/button_text_color"
+            android:textStyle="bold"
+            android:clickable="true"/>
+    </GridLayout>
+
+    <!-- Review Text Box Section -->
+    <EditText
+        android:id="@+id/review_text_box"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/review_textbox_background"
+        android:hint="Let us know more details so that we can do better!"
+        android:fontFamily="@font/tw_cen_mt"
+        android:gravity="top|start"
+        android:padding="12dp"
+        android:textColor="#004D40"
+        android:textSize="16sp"
+        android:inputType="textMultiLine" />
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SUBMIT"
+        android:fontFamily="@font/tw_cen_mt"
+        android:textSize="18sp"
+        android:backgroundTint="#5B3D2A"
+        android:textColor="@android:color/white"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+</LinearLayout>
