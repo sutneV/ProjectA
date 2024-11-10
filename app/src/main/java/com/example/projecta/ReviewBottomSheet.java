@@ -171,6 +171,11 @@ public class ReviewBottomSheet extends BottomSheetDialogFragment {
         reviewData.put("starRating", selectedStarRating); // Save the star rating
         reviewData.put("timestamp", System.currentTimeMillis());
 
+        String businessId = getArguments() != null ? getArguments().getString("business_id") : null;
+        if (businessId != null) {
+            reviewData.put("businessId", businessId); // Add businessId to the review data
+        }
+
         // Save data to the 'reviews' subcollection of the current user
         db.collection("users")
                 .document(userId)

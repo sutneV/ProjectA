@@ -38,7 +38,7 @@ public class OrderConfirmationActivity extends AppCompatActivity implements OnMa
 
     private GoogleMap googleMap;
     private LatLng restaurantLatLng;
-    private String restaurantName, reservationTime, restaurantAddress;
+    private String restaurantName, reservationTime, restaurantAddress, businessId;
     private boolean allergyFriendly;
     private int quantity;
     private double subtotal;
@@ -74,6 +74,7 @@ public class OrderConfirmationActivity extends AppCompatActivity implements OnMa
 
         // Retrieve passed arguments
         Intent intent = getIntent();
+        businessId = intent.getStringExtra("business_id");
         restaurantName = intent.getStringExtra("restaurant_name");
         reservationTime = intent.getStringExtra("reservation_time");
         restaurantAddress = intent.getStringExtra("restaurant_address");
@@ -182,6 +183,10 @@ public class OrderConfirmationActivity extends AppCompatActivity implements OnMa
                             Bundle args = new Bundle();
                             args.putString("order_id", orderId); // Pass order ID
                             args.putString("restaurant_name", restaurantName != null ? restaurantName : "Unknown"); // Pass restaurant name
+                            args.putString("business_id", businessId); // Pass business ID
+
+                            Log.d("OrderConfirmationActivity", "Passing business ID: " + businessId);
+
                             reviewBottomSheet.setArguments(args);
                             reviewBottomSheet.show(getSupportFragmentManager(), "ReviewBottomSheet");
 
@@ -214,6 +219,7 @@ public class OrderConfirmationActivity extends AppCompatActivity implements OnMa
         subtotal = totalPrice - cityTax - stateTax;
 
         Map<String, Object> orderData = new HashMap<>();
+        orderData.put("business_id", businessId);
         orderData.put("order_id", orderId);  // Use the single generated orderId
         orderData.put("restaurant_name", restaurantName);
         orderData.put("reservation_time", reservationTime);
@@ -348,28 +354,47 @@ public class OrderConfirmationActivity extends AppCompatActivity implements OnMa
             if (currentUser != null && orderId != null) {
                 String userId = currentUser.getUid();
 
-                // Show confirmation dialog
-                new androidx.appcompat.app.AlertDialog.Builder(this)
-                        .setTitle("Cancel Reservation")
-                        .setMessage("Are you sure you want to cancel this reservation?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            // Delete the order from Firestore
-                            db.collection("users")
-                                    .document(userId)
-                                    .collection("orders")
-                                    .document(orderId)
-                                    .delete()
-                                    .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(OrderConfirmationActivity.this, "Reservation canceled successfully.", Toast.LENGTH_SHORT).show();
-                                        finish(); // Close the activity
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Log.e("CancelReservation", "Failed to cancel reservation", e);
-                                        Toast.makeText(OrderConfirmationActivity.this, "Failed to cancel reservation: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    });
-                        })
-                        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-                        .show();
+                // Inflate the custom dialog layout
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog_cancel_reservation, null);
+
+                // Create the dialog
+                androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setView(dialogView)
+                        .create();
+
+                // Customize dialog background (Optional)
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                }
+
+                // Set up dialog buttons
+                Button cancelButton = dialogView.findViewById(R.id.btnCancel);
+                Button confirmButton = dialogView.findViewById(R.id.btnConfirm);
+
+                // Cancel button logic
+                cancelButton.setOnClickListener(dialogView1 -> dialog.dismiss());
+
+                // Confirm button logic
+                confirmButton.setOnClickListener(dialogView1 -> {
+                    // Delete the order from Firestore
+                    db.collection("users")
+                            .document(userId)
+                            .collection("orders")
+                            .document(orderId)
+                            .delete()
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(OrderConfirmationActivity.this, "Reservation canceled successfully.", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                                finish(); // Close the activity
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("CancelReservation", "Failed to cancel reservation", e);
+                                Toast.makeText(OrderConfirmationActivity.this, "Failed to cancel reservation: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                });
+
+                // Show the dialog
+                dialog.show();
             } else {
                 Log.e("CancelReservation", "Error: User not logged in or order ID is null.");
                 Toast.makeText(this, "Error: Unable to cancel reservation. Please try again later.", Toast.LENGTH_SHORT).show();

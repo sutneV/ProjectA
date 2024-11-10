@@ -2,6 +2,7 @@ package com.example.projecta;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,6 +27,7 @@ public class ReserveBottomSheet extends BottomSheetDialogFragment {
 
         // Retrieve data from arguments
         Bundle args = getArguments();
+        String businessId = args.getString("business_id");
         String restaurantName = args.getString("restaurant_name");
         String reservationTime = args.getString("reservation_time");
 
@@ -109,6 +111,7 @@ public class ReserveBottomSheet extends BottomSheetDialogFragment {
         // Pass the necessary data using intent extras
         Bundle args = getArguments();
         if (args != null) {
+            intent.putExtra("business_id", args.getString("business_id"));
             intent.putExtra("restaurant_name", args.getString("restaurant_name"));
             intent.putExtra("reservation_time", args.getString("reservation_time"));
             intent.putExtra("restaurant_address", args.getString("restaurant_address"));

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/input_field_background"
+    android:padding="24dp"
+    android:backgroundTint="#FAF1E6">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel Reservation"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/tw_cen_mt"
+        android:textColor="#000000"
+        android:gravity="start" />
+
+    <!-- Subtitle -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to cancel this reservation? This action cannot be undone."
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"
+        android:fontFamily="@font/tw_cen_mt"
+        android:textColor="#878787" />
+
+    <!-- Buttons Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <!-- Cancel Button -->
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:background="?attr/selectableItemBackground"
+            android:textColor="#5B3D2A"
+            android:fontFamily="@font/tw_cen_mt"
+            android:textSize="16sp"
+            android:padding="8dp" />
+
+        <!-- Confirm Button -->
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Confirm"
+            android:backgroundTint="#5B3D2A"
+            android:textColor="#FFFFFF"
+            android:fontFamily="@font/tw_cen_mt"
+            android:textSize="16sp"
+            android:padding="8dp" />
+    </LinearLayout>
+</LinearLayout>

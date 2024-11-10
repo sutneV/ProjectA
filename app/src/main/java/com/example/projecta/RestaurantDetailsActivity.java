@@ -2,17 +2,16 @@ package com.example.projecta;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.transition.Fade;
 import android.transition.TransitionInflater;
 import android.transition.TransitionManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +21,8 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,7 +32,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,9 +42,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,11 +56,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RestaurantDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private LinearLayout moreInfoDetails, addressDetails, allergenDetails;
+    private LinearLayout moreInfoDetails, addressDetails, allergenDetails, reviewDetails;
+    private RecyclerView reviewRecyclerView;
     private boolean isExpanded = false;
     private boolean isAddressExpanded = false;
     private boolean isAllergenExpanded = false;
-    private ImageView expandArrow, addressExpandArrow, allergenExpandArrow;
+    private boolean isReviewExpanded = false;
+    private ImageView expandArrow, addressExpandArrow, allergenExpandArrow, reviewExpandArrow;
     private TextView operatingHoursTextView;
     private TextView addressTextView;
     private TextView phoneTextView;
@@ -72,6 +79,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         put("Nut", R.drawable.ic_nut);
         put("Shellfish", R.drawable.ic_shellfish);
     }};
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +112,12 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         TextView originalPriceTextView = findViewById(R.id.original_price);
         ImageView favoriteIcon = findViewById(R.id.favorite_icon); // Favorite icon added
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        reviewDetails = findViewById(R.id.review_details);
+        reviewExpandArrow = findViewById(R.id.review_info_expand_arrow);
+
+        reviewRecyclerView = new RecyclerView(this);
+        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        reviewDetails.addView(reviewRecyclerView);
 
         originalPriceTextView.setPaintFlags(originalPriceTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         nameTextView.setText(restaurantName);
@@ -115,6 +130,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         Button reserveButton = findViewById(R.id.restaurant_detail_reserve);
         reserveButton.setOnClickListener(v -> {
             Bundle args = new Bundle();
+            args.putString("business_id", businessId);
             args.putString("restaurant_name", restaurantName);
             args.putString("reservation_time", time);
             args.putString("restaurant_address", addressTextView.getText().toString());
@@ -156,14 +172,19 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         LinearLayout allergenContainer = findViewById(R.id.allergen_container);
         allergenExpandArrow = findViewById(R.id.allergen_info_expand_arrow);
 
+        reviewDetails = findViewById(R.id.review_details);
+        LinearLayout reviewContainer = findViewById(R.id.review_container);
+        reviewExpandArrow = findViewById(R.id.review_info_expand_arrow);
+
         moreInfoDetails.setVisibility(View.GONE);
         addressDetails.setVisibility(View.GONE);
         allergenDetails.setVisibility(View.GONE);
+        reviewDetails.setVisibility(View.GONE);
 
         moreInfoContainer.setOnClickListener(v -> toggleMoreInfo());
         addressContainer.setOnClickListener(v -> toggleAddressInfo());
         allergenContainer.setOnClickListener(v -> toggleAllergenInfo());
-
+        reviewContainer.setOnClickListener(v -> toggleReviewDetails(businessId));
         displayRandomAllergens();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -306,6 +327,113 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         isAllergenExpanded = !isAllergenExpanded; // Toggle the expanded state
     }
 
+    private void toggleReviewDetails(String businessId) {
+        Fade fade = new Fade(Fade.IN | Fade.OUT);
+        fade.setDuration(300);
+        TransitionManager.beginDelayedTransition((ViewGroup) reviewDetails.getParent(), fade);
+
+        if (!isReviewExpanded) {
+            // Show the review section
+            reviewDetails.setVisibility(View.VISIBLE);
+            reviewExpandArrow.animate().rotation(180).setDuration(300).start();
+
+            // Fetch reviews if not already fetched
+            fetchReviews(businessId); // Pass the businessId here
+        } else {
+            // Hide the review section
+            reviewDetails.setVisibility(View.GONE);
+            reviewExpandArrow.animate().rotation(0).setDuration(300).start();
+        }
+
+        isReviewExpanded = !isReviewExpanded;
+    }
+
+    private void fetchReviews(String businessId) {
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<Review> reviews = new ArrayList<>();
+                        Map<Review, String> reviewToUserIdMap = new HashMap<>();
+
+                        // Iterate over all users
+                        for (QueryDocumentSnapshot userDoc : task.getResult()) {
+                            String userId = userDoc.getId();
+
+                            // Access the reviews subcollection for each user
+                            db.collection("users")
+                                    .document(userId)
+                                    .collection("reviews")
+                                    .whereEqualTo("businessId", businessId)
+                                    .get()
+                                    .addOnCompleteListener(reviewTask -> {
+                                        if (reviewTask.isSuccessful() && reviewTask.getResult() != null) {
+                                            for (QueryDocumentSnapshot reviewDoc : reviewTask.getResult()) {
+                                                Review review = reviewDoc.toObject(Review.class);
+                                                reviews.add(review);
+                                                reviewToUserIdMap.put(review, userId);
+                                            }
+
+                                            // Fetch usernames after all reviews are collected
+                                            if (reviewTask.getResult().size() > 0) {
+                                                fetchUsernames(reviews, reviewToUserIdMap);
+                                            }
+                                        } else {
+                                            Log.e("FetchReviews", "Error fetching reviews for user: " + userId, reviewTask.getException());
+                                        }
+                                    });
+                        }
+                    } else {
+                        Log.e("FetchReviews", "Error fetching users", task.getException());
+                    }
+                });
+    }
+
+    private void fetchUsernames(List<Review> reviews, Map<Review, String> reviewToUserIdMap) {
+        Map<String, String> userIdToUsernameMap = new HashMap<>();
+        Set<String> uniqueUserIds = new HashSet<>(reviewToUserIdMap.values());
+
+        for (String userId : uniqueUserIds) {
+            db.collection("users")
+                    .document(userId)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            DocumentSnapshot userDoc = task.getResult();
+                            String username = userDoc.getString("username");
+                            userIdToUsernameMap.put(userId, username);
+
+                            // If all usernames are fetched, map them to reviews
+                            if (userIdToUsernameMap.size() == uniqueUserIds.size()) {
+                                attachUsernamesToReviews(reviews, reviewToUserIdMap, userIdToUsernameMap);
+                            }
+                        } else {
+                            Log.e("FetchUsernames", "Error fetching user data for userId: " + userId, task.getException());
+                        }
+                    });
+        }
+    }
+
+    private void attachUsernamesToReviews(
+            List<Review> reviews,
+            Map<Review, String> reviewToUserIdMap,
+            Map<String, String> userIdToUsernameMap
+    ) {
+        List<Pair<Review, String>> reviewsWithUsernames = new ArrayList<>();
+
+        for (Review review : reviews) {
+            String userId = reviewToUserIdMap.get(review);
+            String username = userIdToUsernameMap.get(userId);
+            reviewsWithUsernames.add(new Pair<>(review, username));
+        }
+
+        updateAdapter(reviewsWithUsernames);
+    }
+
+    private void updateAdapter(List<Pair<Review, String>> reviewsWithUsernames) {
+        RestaurantDetailsReviewAdapter adapter = new RestaurantDetailsReviewAdapter(this, reviewsWithUsernames);
+        reviewRecyclerView.setAdapter(adapter);
+    }
 
     private void displayRandomAllergens() {
         allergenDetails.removeAllViews(); // Clear any existing allergen views

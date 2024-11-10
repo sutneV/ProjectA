@@ -88,6 +88,10 @@ public class LoginActivity extends AppCompatActivity {
                 .setView(dialogView)
                 .create();
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
         // Get the views from the dialog layout
         EditText etResetEmail = dialogView.findViewById(R.id.etResetEmail);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);

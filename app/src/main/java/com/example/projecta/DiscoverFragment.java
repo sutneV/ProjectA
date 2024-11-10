@@ -283,7 +283,7 @@ public class DiscoverFragment extends Fragment {
         }
 
         YelpApiService yelpApiService = getYelpApiService();
-        String apiKey = "Bearer YOUR_API_KEY";
+        String apiKey = "Bearer Raj1vqpkZqqenzxYM7SaeNEITjBQHCz7gCSNgqQjVKzXGd9TrNjakyhQRZRDhCZmS5CN87UZQU5v0UXNoyeWOnOfrXE8jy0_17nTPsOllvXD455mAGdzTmyLWCgVZ3Yx";
 
         yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 7000, 50)
                 .enqueue(new Callback<YelpResponse>() {
