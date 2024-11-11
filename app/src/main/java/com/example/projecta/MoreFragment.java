@@ -105,14 +105,6 @@ public class MoreFragment extends Fragment {
             startActivity(intent);
         });
 
-        // Debugging check
-        if (uploadButton != null) {
-            uploadButton.bringToFront();
-            Log.d(TAG, "uploadButton brought to front successfully");
-        } else {
-            Log.e(TAG, "uploadButton is null. Check if it is defined in fragment_more.xml");
-        }
-
         // Set up image picker launcher
         photoPickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -197,7 +189,6 @@ public class MoreFragment extends Fragment {
                     }
                 });
     }
-
 
     private void updateUI() {
         if (orderList.isEmpty()) {

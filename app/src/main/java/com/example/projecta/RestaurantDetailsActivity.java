@@ -335,7 +335,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements OnMa
         if (!isReviewExpanded) {
             // Show the review section
             reviewDetails.setVisibility(View.VISIBLE);
-            reviewExpandArrow.animate().rotation(180).setDuration(300).start();
+            reviewExpandArrow.animate().rotation(90).setDuration(300).start();
 
             // Fetch reviews if not already fetched
             fetchReviews(businessId); // Pass the businessId here

@@ -18,21 +18,20 @@ public class OnboardingFragment extends Fragment {
     private static final String ARG_ANIMATION = "animation";
     private static final String ARG_TITLE = "title";
     private static final String ARG_DESCRIPTION = "description";
-    private static final String ARG_IS_LAST = "is_last";  // Add the new argument for identifying the last fragment
+    private static final String ARG_IS_LAST = "is_last";
 
     private int animationResId;
     private String title;
     private String description;
-    private boolean isLast;  // This flag will be used to check if it's the last onboarding fragment
+    private boolean isLast;
 
-    // Modify the newInstance method to accept four parameters
     public static OnboardingFragment newInstance(int animationResId, String title, String description, boolean isLast) {
         OnboardingFragment fragment = new OnboardingFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_ANIMATION, animationResId);
         args.putString(ARG_TITLE, title);
         args.putString(ARG_DESCRIPTION, description);
-        args.putBoolean(ARG_IS_LAST, isLast);  // Pass the 'isLast' flag to the fragment
+        args.putBoolean(ARG_IS_LAST, isLast);
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,7 +43,7 @@ public class OnboardingFragment extends Fragment {
             animationResId = getArguments().getInt(ARG_ANIMATION);
             title = getArguments().getString(ARG_TITLE);
             description = getArguments().getString(ARG_DESCRIPTION);
-            isLast = getArguments().getBoolean(ARG_IS_LAST);  // Retrieve the 'isLast' flag
+            isLast = getArguments().getBoolean(ARG_IS_LAST);
         }
     }
 
@@ -58,27 +57,28 @@ public class OnboardingFragment extends Fragment {
         TextView descriptionTextView = view.findViewById(R.id.description_text_view);
         Button getStartedButton = view.findViewById(R.id.getStartedButton);
 
-        // Set the animation, title, and description
+        // Set animation, title, and description
         animationView.setAnimation(animationResId);
         titleTextView.setText(title);
         descriptionTextView.setText(description);
 
-        // Show the "Get Started" button only if it's the last fragment
+        // Handle "Get Started" button visibility and click
         if (isLast) {
             getStartedButton.setVisibility(View.VISIBLE);
             getStartedButton.setOnClickListener(v -> {
-                // Redirect to the LoginActivity when "Get Started" is clicked
+                // Mark onboarding as complete
+                if (getActivity() instanceof OnboardingActivity) {
+                    ((OnboardingActivity) getActivity()).markOnboardingComplete();
+                }
+                // Navigate to LoginActivity
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
-                getActivity().finish();  // Close the onboarding activity
+                getActivity().finish(); // Close onboarding activity
             });
         } else {
-            getStartedButton.setVisibility(View.GONE);  // Hide the button for other fragments
+            getStartedButton.setVisibility(View.GONE);
         }
 
         return view;
     }
 }
-
-
-

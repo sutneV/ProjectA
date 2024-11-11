@@ -40,6 +40,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, OrderConfirmationActivity.class);
             intent.putExtra("order_id", order.getOrderId());
+            intent.putExtra("business_id", order.getBusinessId());
             context.startActivity(intent);
         });
     }

@@ -1,11 +1,14 @@
 package com.example.projecta;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +19,21 @@ public class OnboardingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
+
+        // Check if onboarding has been completed
+        SharedPreferences preferences = getSharedPreferences("OnboardingPrefs", MODE_PRIVATE);
+        boolean isOnboardingCompleted = preferences.getBoolean("OnboardingCompleted", false);
+
+        if (isOnboardingCompleted) {
+            // Skip onboarding and go straight to LoginActivity
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
+        // If onboarding not completed, proceed with showing it
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_onboarding);
 
         viewPager = findViewById(R.id.viewPager);
@@ -31,5 +47,12 @@ public class OnboardingActivity extends AppCompatActivity {
         pagerAdapter = new OnboardingPagerAdapter(this, fragmentList);
         viewPager.setAdapter(pagerAdapter);
     }
-}
 
+    public void markOnboardingComplete() {
+        // Save the completion flag in SharedPreferences
+        SharedPreferences preferences = getSharedPreferences("OnboardingPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("OnboardingCompleted", true);
+        editor.apply();
+    }
+}

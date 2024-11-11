@@ -160,7 +160,7 @@ public class DiscoverFragment extends Fragment {
         }
 
         YelpApiService yelpApiService = getYelpApiService();
-        String apiKey = "Bearer YOUR_API_KEY";
+        String apiKey = "Bearer ZfiP4du6QXfdVMYfYEfD4hjEPW6BNdVOBYYdli8--J5aNN-OQcu2kVKjZJ3ETW7DTK5M_VHsoYTV63DlytRo-5lr4tjtmUh0pxpt1WEmGtQfur5uLNRb7OGpFu0xZ3Yx";
 
         yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 10000, 50)
                 .enqueue(new Callback<YelpResponse>() {
@@ -225,7 +225,7 @@ public class DiscoverFragment extends Fragment {
         }
 
         YelpApiService yelpApiService = getYelpApiService();
-        String apiKey = "Bearer YOUR_API_KEY";
+        String apiKey = "Bearer ZfiP4du6QXfdVMYfYEfD4hjEPW6BNdVOBYYdli8--J5aNN-OQcu2kVKjZJ3ETW7DTK5M_VHsoYTV63DlytRo-5lr4tjtmUh0pxpt1WEmGtQfur5uLNRb7OGpFu0xZ3Yx";
 
         yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 5000, 50)
                 .enqueue(new Callback<YelpResponse>() {
@@ -283,7 +283,7 @@ public class DiscoverFragment extends Fragment {
         }
 
         YelpApiService yelpApiService = getYelpApiService();
-        String apiKey = "Bearer Raj1vqpkZqqenzxYM7SaeNEITjBQHCz7gCSNgqQjVKzXGd9TrNjakyhQRZRDhCZmS5CN87UZQU5v0UXNoyeWOnOfrXE8jy0_17nTPsOllvXD455mAGdzTmyLWCgVZ3Yx";
+        String apiKey = "Bearer ZfiP4du6QXfdVMYfYEfD4hjEPW6BNdVOBYYdli8--J5aNN-OQcu2kVKjZJ3ETW7DTK5M_VHsoYTV63DlytRo-5lr4tjtmUh0pxpt1WEmGtQfur5uLNRb7OGpFu0xZ3Yx";
 
         yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 7000, 50)
                 .enqueue(new Callback<YelpResponse>() {

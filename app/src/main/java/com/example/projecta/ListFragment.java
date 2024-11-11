@@ -102,7 +102,7 @@ public class ListFragment extends Fragment {
 
     private void fetchPaginatedRestaurantsFromYelp(double latitude, double longitude, int offset) {
         YelpApiService yelpApiService = getYelpApiService();
-        String apiKey = "Bearer s5Z4rypr6TE4p-kokQWjoeVsl8WFmvNG1KVKVxAvo6QwJYhTGW5YvurrghO5M25Svs6VUsKyhBXIxXx15bsopgaZ6GorJf6vVdFD82VpE-FJ84xHmrrNv4CPV_owZ3Yx"; // Replace with your actual Yelp API key
+        String apiKey = "Bearer s5Z4rypr6TE4p-kokQWjoeVsl8WFmvNG1KVKVxAvo6QwJYhTGW5YvurrghO5M25Svs6VUsKyhBXIxXx15bsopgaZ6GorJf6vVdFD82VpE-FJ84xHmrrNv4CPV_owZ3Yx";
 
         yelpApiService.getRestaurants(apiKey, latitude, longitude, "restaurants", 10000, 50, offset)
                 .enqueue(new Callback<YelpResponse>() {
@@ -133,7 +133,7 @@ public class ListFragment extends Fragment {
                                     );
 
                                     restaurantList.add(restaurant);
-                                    originalRestaurantList.add(restaurant); // Add to backup list for filtering
+                                    originalRestaurantList.add(restaurant);
                                     addedBusinessIds.add(business.getId());
                                 }
                             }
